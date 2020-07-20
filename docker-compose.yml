@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  src:
+    build: 
+      context: .
+      dockerfile: ./deploy/rails/Dockerfile
+    container_name: src
+    restart: always
+    env_file: ./deploy/dev.env
+    ports:
+      - "3000:3000"
+    links: 
+      - mysql
+    volumes:
+      - .:/var/www/ror_app
+    depends_on: 
+      - mysql
+       
+  nginx:
+    build: 
+      context: .
+      dockerfile: ./deploy/nginx/Dockerfile
+    container_name: nginx
+    restart: always
+    env_file: ./deploy/dev.env
+    links: 
+      - src
+    ports:
+      - "80:80"
+    volumes:
+      - public:/var/www/ror_app/public
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    env_file: ./deploy/dev.env
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+  
+volumes: 
+  public:
+  .:
