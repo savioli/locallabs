@@ -41,8 +41,9 @@
             <label for="country">Stories</label>
             <div class="d-block">
 
-              <a class="btn btn-outline-primary" href="#">All</a>
-              <a class="btn btn-outline-secondary" href="#">My Stories</a>
+              <%= link_to 'All', root_url, class: 'btn btn-outline-primary' %>
+              
+              <a class="btn btn-outline-secondary" href="">My Stories</a>
 
             </div>
 
@@ -62,6 +63,14 @@
             <label for="state">Status</label>
             <select class="custom-select d-block w-100" id="state" required="">
               <option value="">All</option>
+              <option value="0">Unassigned</option>
+              <option value="1">Draft</option>
+              <option value="2">For Review</option>
+              <option value="3">In Review</option>
+              <option value="4">Pending</option>
+              <option value="5">Approved</option>
+              <option value="6">Published</option>
+              <option value="7">Archived</option>
             </select>
             <div class="invalid-feedback">
               Please provide a valid state.
@@ -80,25 +89,27 @@
 
   <div class="row mb-2">
 
+    <% @stories.each do |story| %>
+
     <div class="col-md-12">
     
       <div class="card flex-md-row mb-4 box-shadow">
         
         <div class="card-body d-flex flex-column align-items-start">
         
-          <div class="mb-1 text-muted">Story 1</div>
+          <div class="mb-1 text-muted">Story <%= story.id %></div>
           <h3 class="mb-1">
-            <a class="text-dark" href="#">Featured post</a>
+            <a class="text-dark" href="#"><%= story.headline %></a>
           </h3>
 
-          <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
+          <%# <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p> %>
 
-          <p class="card-text mb-auto mb-2">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          <p class="card-text mb-auto mb-2"><%= story.body %></p>
           
           <div class="d-flex justify-content-between align-items-center py-4">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  <%= link_to 'View', root_url + story.id.to_s, class: 'btn btn-sm btn-outline-secondary' %>
+                  <%= link_to 'Edit', root_url + story.id.to_s, class: 'btn btn-sm btn-outline-secondary' %>
                 </div>
                 <%# <small class="text-muted">9 mins</small> %>
               </div>
@@ -109,7 +120,9 @@
         
 
         <div class="float-right">
-          <strong class="d-inline-block mb-2 text-success">Published</strong>
+          <strong class="d-inline-block mb-2 text-success">
+          <%= story.status %>
+          </strong>
           
         </div>
         
@@ -118,8 +131,9 @@
       </div>
     
     </div>
+    <% end %>
 
-    <div class="col-md-12">
+    <%# <div class="col-md-12">
     
       <div class="card flex-md-row mb-4 box-shadow">
         
@@ -140,11 +154,10 @@
         <div class="float-right">
           <strong class="d-inline-block mb-2 text-primary">Success</strong>
         </div>
-        <%# <img class="card-img-right flex-auto d-none d-md-block" data-src="holder.js/200x250?theme=thumb" alt="Card image cap"> %>
       
       </div>
     
-    </div>
+    </div> %>
 
     
   </div>
@@ -154,20 +167,60 @@
 
       <nav aria-label="Page navigation example">
 
+      <%=@offset%>
+      
+      <%=@page%>
+      <%=@total_of_stories%>
+
         <ul class="pagination justify-content-end">
 
-          <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Previous</a>
+          <li class="page-item">
+            <a class="page-link" href="<%= root_url %>">First</a>
           </li>
 
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
+<%# 
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+          </li> %>
 
           <li class="page-item">
-            <a class="page-link" href="#">Next</a>
+            <a class="page-link" href="<%= root_url + @previous_page.to_s %>">Previous</a>
+          </li>
+
+          <% for i in @min_page..@max_page do %>
+          
+            
+              
+            <% if i ==  @page %>
+              <li class="page-item active">
+              <a class="page-link" href="<%= root_url + i.to_s %>">
+                <%=i.to_s%>
+              </a>
+              </li>
+            <% else %>
+              <li class="page-item">
+              <a class="page-link" href="<%= root_url + i.to_s %>">
+                <%=i.to_s%>
+              </a>
+              </li>
+            <% end %>
+
+              <%# <%= link_to  i.to_s, root_url + i.to_s, class: 'page-link' %> 
+
+            
+          
+          <% end %>
+
+          <%# <li class="page-item"><a class="page-link" href="#">2</a></li> %>
+
+          <%# <li class="page-item"><a class="page-link" href="#">3</a></li> %>
+
+          <li class="page-item">
+            <a class="page-link" href="<%= root_url + @next_page.to_s %>">Next</a>
+          </li>
+
+          <li class="page-item">
+            <a class="page-link" href="<%= root_url + @max_pages.to_s %>">Last</a>
           </li>
 
         </ul>
