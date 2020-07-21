@@ -1,0 +1,199 @@
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+
+<div class="container">
+  <header class="blog-header py-3 mb-2">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-4 pt-1">
+      </div>
+      <div class="col-4 text-center">
+        <a class="blog-header-logo text-dark" href="#">New York News</a>
+      </div>
+      
+      <div class="col-4 justify-content-end align-items-center">
+  
+        <div id="logout" class="py-1">
+          <%= link_to 'logout', logout_path, class: 'btn btn-sm btn-outline-secondary' %>
+        </div>
+
+        <div id="user-name"  class="py-2">
+            <%= current_user.name %>
+
+              <div class="clear"></div>
+          <div id="user-role" class="">
+            
+            <% if current_user.type == 'ChiefEditor' %>
+            Chief Editor
+            <% end %>
+
+          </div>
+
+        </div>
+
+        <%# <div class="clear"></div> %>
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="row">
+
+          <div class="col-md-3 mb-3">
+            <label for="country">Stories</label>
+            <div class="d-block">
+
+              <a class="btn btn-outline-primary" href="#">All</a>
+              <a class="btn btn-outline-secondary" href="#">My Stories</a>
+
+            </div>
+
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label for="country">Writer | Reviewer</label>
+            <select class="custom-select d-block w-100" id="country" required="">
+              <option value="">All</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a valid country.
+            </div>
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label for="state">Status</label>
+            <select class="custom-select d-block w-100" id="state" required="">
+              <option value="">All</option>
+            </select>
+            <div class="invalid-feedback">
+              Please provide a valid state.
+            </div>
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <a class="py-4  w-100 btn btn-outline-primary float-right" href="#">New Story</a>
+          </div>
+
+
+
+        </div>
+
+
+
+  <div class="row mb-2">
+
+    <div class="col-md-12">
+    
+      <div class="card flex-md-row mb-4 box-shadow">
+        
+        <div class="card-body d-flex flex-column align-items-start">
+        
+          <div class="mb-1 text-muted">Story 1</div>
+          <h3 class="mb-1">
+            <a class="text-dark" href="#">Featured post</a>
+          </h3>
+
+          <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
+
+          <p class="card-text mb-auto mb-2">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          
+          <div class="d-flex justify-content-between align-items-center py-4">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                </div>
+                <%# <small class="text-muted">9 mins</small> %>
+              </div>
+
+          <%# <a href="#">Continue reading</a> %>
+        
+        </div>
+        
+
+        <div class="float-right">
+          <strong class="d-inline-block mb-2 text-success">Published</strong>
+          
+        </div>
+        
+        <%# <img class="card-img-right flex-auto d-none d-md-block" data-src="holder.js/200x250?theme=thumb" alt="Card image cap"> %>
+      
+      </div>
+    
+    </div>
+
+    <div class="col-md-12">
+    
+      <div class="card flex-md-row mb-4 box-shadow">
+        
+        <div class="card-body d-flex flex-column align-items-start">
+        
+          <div class="mb-1 text-muted">Story 2</div>
+          <h3 class="mb-1">
+            <a class="text-dark" href="#">Featured post</a>
+          </h3>
+
+          <p class="card-text mb-auto mb-2">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          
+          <a href="#">Continue reading</a>
+        
+        </div>
+        
+
+        <div class="float-right">
+          <strong class="d-inline-block mb-2 text-primary">Success</strong>
+        </div>
+        <%# <img class="card-img-right flex-auto d-none d-md-block" data-src="holder.js/200x250?theme=thumb" alt="Card image cap"> %>
+      
+      </div>
+    
+    </div>
+
+    
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <nav aria-label="Page navigation example">
+
+        <ul class="pagination justify-content-end">
+
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+          </li>
+
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+
+        </ul>
+
+      </nav>
+
+    </div>
+  </div>
+  
+</div>
+
+<%# 
+<footer class="blog-footer">
+  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+  <p>
+    <a href="#">Back to top</a>
+  </p>
+</footer>
+%>
+
+<footer class="text-muted">
+  <div class="container">
+    <p class="float-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+    <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>
+  </div>
+</footer>
