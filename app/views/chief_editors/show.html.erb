@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @chief_editor.name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @chief_editor.email %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @chief_editor.type %>
+</p>
+
+<p>
+  <strong>Organization:</strong>
+  <%= @chief_editor.organization_id %>
+</p>
+
+<%= link_to 'Edit', edit_chief_editor_path(@chief_editor) %> |
+<%= link_to 'Back', chief_editors_path %>
