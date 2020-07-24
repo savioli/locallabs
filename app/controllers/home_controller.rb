@@ -2,7 +2,56 @@ class HomeController < ApplicationController
   before_action :authorize
 
   def index
+
+    # My Stories param
+
+    creator = params[:creator]
     
+    # Checks whether the creator parameter is not null
+    if !creator.nil?
+          
+      if creator == '' || !creator.eql?('true')
+
+        redirect_to root_url and return
+
+      end
+
+    end
+
+    @creator = creator
+
+    # Writer (Writer or Reviewer) param
+
+    writer_or_reviewer = params[:writer]
+
+    # Checks whether the creator parameter is not null
+    if !writer_or_reviewer.nil?
+          
+      if writer_or_reviewer == ''
+
+        redirect_to root_url and return
+
+      end
+
+    end
+
+    # Status param
+    status = params[:status]
+
+    # Checks whether the creator parameter is not null
+    if !status.nil?
+          
+      if status == ''
+
+        redirect_to root_url and return
+
+      end
+
+    end
+
+    @status = status
+
+
     # Define a listing limit
     limit = 3
 
@@ -79,6 +128,75 @@ class HomeController < ApplicationController
     @previous_page = 1 if @previous_page <= 0
 
     @stories = Story.limit(limit).offset(offset)
+
+    # Get all writers
+    @writers = Writer.all
+    
+    is_the_first_param = true
+
+    current_url = ''
+
+    if !creator.nil? 
+
+      if is_the_first_param
+
+        current_url.concat( '?' )
+
+        is_the_first_param = false
+
+      else
+      
+        current_url.concat( '&' )
+
+      end
+
+      current_url.concat( 'creator=' )
+      current_url.concat( creator.to_s )
+
+    end
+
+    # Writer param
+
+    if !writer_or_reviewer.nil? 
+
+      if is_the_first_param
+
+        current_url.concat( '?' )
+
+        is_the_first_param = false
+      
+      else
+      
+        current_url.concat( '&' )
+
+      end
+
+      current_url.concat( 'writer=' )
+      current_url.concat( writer_or_reviewer )
+
+    end
+
+    # Status param
+    if !status.nil? 
+
+      if status
+
+        current_url.concat( '?' )
+
+        is_the_first_param = false
+      
+      else
+      
+        current_url.concat( '&' )
+
+      end
+
+      current_url.concat( 'status=' )
+      current_url.concat( status )
+
+    end
+
+    @current_url = current_url
 
   end
 end

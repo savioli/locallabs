@@ -52,6 +52,6 @@ end
 # Create Stories
 50.times do |_index|
   Story.create(headline: Faker::Lorem.sentence(6, 0).chop,
-               body: Faker::Lorem.paragraph,
+               body: Faker::Lorem.sentence(word_count: 30),
                status: Random.rand(1..7))
 end

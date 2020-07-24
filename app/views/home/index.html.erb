@@ -41,9 +41,21 @@
             <label for="country">Stories</label>
             <div class="d-block">
 
-              <%= link_to 'All', root_url, class: 'btn btn-outline-primary' %>
+              <% if !@creator.nil? && @creator == 'true' %>
+
+                <%= link_to 'All', root_url, class: 'btn btn-outline-primary' %>
               
-              <a class="btn btn-outline-secondary" href="">My Stories</a>
+                <%= link_to 'My Stories', root_url + '?creator=true', class: 'btn btn-primary' %>
+
+              <% else %>
+
+                <%= link_to 'All', root_url, class: 'btn btn-primary' %>
+
+                <%= link_to 'My Stories', root_url + '?creator=true', class: 'btn btn-outline-secondary' %>
+              
+              <% end %>
+
+
 
             </div>
 
@@ -53,6 +65,10 @@
             <label for="country">Writer | Reviewer</label>
             <select class="custom-select d-block w-100" id="country" required="">
               <option value="">All</option>
+                <% @writers.each do |writer| %>
+                <option value="<%=writer.id%>>"><%=writer.name%></option>
+              <% end %>
+
             </select>
             <div class="invalid-feedback">
               Please select a valid country.
@@ -108,8 +124,8 @@
           
           <div class="d-flex justify-content-between align-items-center py-4">
                 <div class="btn-group">
-                  <%= link_to 'View', root_url + story.id.to_s, class: 'btn btn-sm btn-outline-secondary' %>
-                  <%= link_to 'Edit', root_url + story.id.to_s, class: 'btn btn-sm btn-outline-secondary' %>
+                  <%= link_to 'View', root_path + 'stories/' + story.id.to_s + '/view', class: 'btn btn-sm btn-outline-secondary' %>
+                  <%= link_to 'Edit', root_path + 'stories/' + story.id.to_s + '/edit' , class: 'btn btn-sm btn-outline-secondary' %>
                 </div>
                 <%# <small class="text-muted">9 mins</small> %>
               </div>
@@ -169,13 +185,14 @@
 
       <%=@offset%>
       
+      <%=@current_url%>
       <%=@page%>
       <%=@total_of_stories%>
 
         <ul class="pagination justify-content-end">
 
           <li class="page-item">
-            <a class="page-link" href="<%= root_url %>">First</a>
+            <a class="page-link" href="<%= root_url + @current_url %>">First</a>
           </li>
 
 <%# 
@@ -184,7 +201,7 @@
           </li> %>
 
           <li class="page-item">
-            <a class="page-link" href="<%= root_url + @previous_page.to_s %>">Previous</a>
+            <a class="page-link" href="<%= root_url + @previous_page.to_s + @current_url %>">Previous</a>
           </li>
 
           <% for i in @min_page..@max_page do %>
@@ -193,13 +210,13 @@
               
             <% if i ==  @page %>
               <li class="page-item active">
-              <a class="page-link" href="<%= root_url + i.to_s %>">
+              <a class="page-link" href="<%= root_url + i.to_s + @current_url %>">
                 <%=i.to_s%>
               </a>
               </li>
             <% else %>
               <li class="page-item">
-              <a class="page-link" href="<%= root_url + i.to_s %>">
+              <a class="page-link" href="<%= root_url + i.to_s + @current_url %>">
                 <%=i.to_s%>
               </a>
               </li>
@@ -216,11 +233,11 @@
           <%# <li class="page-item"><a class="page-link" href="#">3</a></li> %>
 
           <li class="page-item">
-            <a class="page-link" href="<%= root_url + @next_page.to_s %>">Next</a>
+            <a class="page-link" href="<%= root_url + @next_page.to_s + @current_url %>">Next</a>
           </li>
 
           <li class="page-item">
-            <a class="page-link" href="<%= root_url + @max_pages.to_s %>">Last</a>
+            <a class="page-link" href="<%= root_url + @max_pages.to_s + @current_url %>">Last</a>
           </li>
 
         </ul>

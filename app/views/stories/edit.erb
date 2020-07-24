@@ -1,0 +1,184 @@
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+
+<div class="container">
+  <header class="blog-header py-3 mb-2">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-4 pt-1">
+      </div>
+      <div class="col-4 text-center">
+        <a class="blog-header-logo text-dark" href="#">New York News</a>
+      </div>
+      
+      <div class="col-4 justify-content-end align-items-center">
+  
+        <div id="logout" class="py-1">
+          <%= link_to 'logout', logout_path, class: 'btn btn-sm btn-outline-secondary' %>
+        </div>
+
+        <div id="user-name"  class="py-2">
+            <%= current_user.name %>
+
+              <div class="clear"></div>
+          <div id="user-role" class="">
+            
+            <% if current_user.type == 'ChiefEditor' %>
+            Chief Editor
+            <% end %>
+
+          </div>
+
+        </div>
+
+        <%# <div class="clear"></div> %>
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="row">
+
+    <div class="col-md-2 mb-3">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <%= link_to 'Home', root_url  %>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Story <%=@story.id%></li>
+            </ol>
+        </nav>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="row mb-2">
+
+    <div class="col-md-12">
+    
+<form class="needs-validation" novalidate="">
+
+
+            <div class="mb-3">
+              
+              <label for="email">Headline</label>
+              
+              <input type="email" class="form-control" id="email" placeholder="Write a headline..." value="<%=@story.headline%>">
+              
+              <div class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </div>
+
+            </div>
+
+            <div class="row">
+              
+              <div class="col-md-6 mb-3">
+                <label for="country">Writer</label>
+                
+                <select class="custom-select d-block w-100" id="country" required="">
+                    
+                    <% @writers.each do |writer| %>
+
+                        <% if ( !@writer.nil? ) && ( @writer.id == writer.id )  %>
+                        
+                        <option value="<%=writer.id%>" selected><%=writer.name%></option>
+                        
+                        <% else %>
+                        
+                        <option value="<%=writer.id%>>"><%=writer.name%></option>
+                        
+                        <% end %>
+
+                    <% end %>
+
+                </select>
+
+                <div class="invalid-feedback">
+                  Please select a valid country.
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                
+                <label for="state">Reviewer</label>
+
+                <select class="custom-select d-block w-100" id="country" required="">
+                    
+                    <% @writers.each do |writer| %>
+
+                        <% if ( !@reviewer.nil? ) && ( @reviewer.id == writer.id )  %>
+                        
+                        <option value="<%=writer.id%>" selected><%=writer.name%></option>
+                        
+                        <% else %>
+                        
+                        <option value="<%=writer.id%>>"><%=writer.name%></option>
+                        
+                        <% end %>
+
+                    <% end %>
+
+
+                </select>
+
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mb-3">
+              <%# <label for="address">Address</label> %>
+              
+            <textarea class="form-control" aria-label="With textarea" placeholder="Write a story...">
+            <%=@story.body%>
+            </textarea>
+
+
+              <div class="invalid-feedback">
+                Please enter your shipping address.
+              </div>
+            </div>
+
+            <div class="row">
+
+              <div class="col-md-3 mb-3">                
+                <button class="btn btn-warning btn-lg btn-block" type="submit">Approve</button>
+              </div>
+
+              <div class="col-md-3 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Request Changes</button>
+              </div>
+
+              <div class="col-md-2 mb-3">
+              </div>
+
+              <div class="col-md-2 mb-3">
+                <button class="btn btn-secondary btn-lg btn-block" type="submit">Cancel</button>
+              </div>
+
+              <div class="col-md-2 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+              </div>
+              
+            </div>
+
+            
+          </form>
+    </div>
+    
+  </div>
+  
+</div>
+
+<footer class="blog-footer">
+  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+  <p>
+    <a href="#">Back to top</a>
+  </p>
+</footer>
+<%#= @story.methods.inspect %>

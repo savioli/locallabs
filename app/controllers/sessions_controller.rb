@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
 
     user = User.where(email: params[:email]).first
 
-    if user
+    if !user.nil?
 
       organization_slug = user.organization.slug
 

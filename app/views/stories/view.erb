@@ -1,0 +1,87 @@
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+
+<div class="container">
+  <header class="blog-header py-3 mb-2">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-4 pt-1">
+      </div>
+      <div class="col-4 text-center">
+        <a class="blog-header-logo text-dark" href="#">New York News</a>
+      </div>
+      
+      <div class="col-4 justify-content-end align-items-center">
+  
+        <div id="logout" class="py-1">
+          <%= link_to 'logout', logout_path, class: 'btn btn-sm btn-outline-secondary' %>
+        </div>
+
+        <div id="user-name"  class="py-2">
+            <%= current_user.name %>
+
+              <div class="clear"></div>
+          <div id="user-role" class="">
+            
+            <% if current_user.type == 'ChiefEditor' %>
+            Chief Editor
+            <% end %>
+
+          </div>
+
+        </div>
+
+        <%# <div class="clear"></div> %>
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="row">
+
+    <div class="col-md-3 mb-3">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <%= link_to 'Home', root_url  %>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Story <%=@story.id%></li>
+            </ol>
+        </nav>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="row mb-2">
+
+    <div class="col-md-12">
+    
+        <div class="blog-post">
+            
+            <h2 class="blog-post-title">
+            <%=@story.headline%>
+            </h2>
+            
+            <p class="blog-post-meta"><%=@story.created_at%> by <a href="#">Jacob</a></p>
+
+            <p>
+
+            <%=@story.body%>
+            </p>
+        
+        </div>
+    
+    </div>
+    
+  </div>
+  
+</div>
+
+<footer class="blog-footer">
+  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+  <p>
+    <a href="#">Back to top</a>
+  </p>
+</footer>

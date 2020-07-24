@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_050325) do
+ActiveRecord::Schema.define(version: 2020_07_21_230703) do
 
   create_table "organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
@@ -25,6 +25,10 @@ ActiveRecord::Schema.define(version: 2020_07_21_050325) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "status"
+    t.bigint "writer_id"
+    t.bigint "reviewer_id"
+    t.index ["reviewer_id"], name: "index_stories_on_reviewer_id"
+    t.index ["writer_id"], name: "index_stories_on_writer_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -38,5 +42,7 @@ ActiveRecord::Schema.define(version: 2020_07_21_050325) do
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
+  add_foreign_key "stories", "users", column: "reviewer_id"
+  add_foreign_key "stories", "users", column: "writer_id"
   add_foreign_key "users", "organizations"
 end

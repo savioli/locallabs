@@ -15,5 +15,8 @@ Rails.application.routes.draw do
   
   get ':id', to: 'home#index'
 
+  get 'stories/:id/edit', to: 'stories#edit'
+  get 'stories/:id/view', to: 'stories#view'
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
