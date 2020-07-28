@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="float-left">
+            <p class="text-muted">
+
+                Page <%=@pagination.page%> of <%=@pagination.max_pages%>
+                
+            </p>
+        </div>
+
+        <div aria-label="Page navigation example" class="float-right">
+
+            <ul class="pagination justify-content-end">
+
+                <li class="page-item">
+                    <a class="page-link" href="<%= root_url + @pagination.first_page.to_s %>">First</a>
+                </li>
+
+
+                <li class="page-item">
+                    <a class="page-link" href="<%= root_url + @pagination.previous_page.to_s + @current_url %>">Previous</a>
+                </li>
+
+                <% for i in @pagination.min_page..@pagination.max_page do %>
+          
+                    <% if i ==  @pagination.page %>
+        
+                        <li class="page-item active">
+                            <a class="page-link" href="<%= root_url + i.to_s + @current_url %>">
+                                <%=i.to_s%>
+                            </a>
+                        </li>
+                    <% else %>
+                        <li class="page-item">
+                            <a class="page-link" href="<%= root_url + i.to_s + @current_url %>">
+                                <%=i.to_s%>
+                            </a>
+                        </li>
+                    <% end %>
+          
+                <% end %>
+
+                <li class="page-item">
+                    <a class="page-link" href="<%= root_url + @pagination.next_page.to_s + @current_url %>">Next</a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" href="<%= root_url + @pagination.max_pages.to_s + @current_url %>">Last</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+</div>

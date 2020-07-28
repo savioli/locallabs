@@ -1,269 +1,202 @@
-<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
 
-<div class="container">
-  <header class="blog-header py-3 mb-2">
-    <div class="row flex-nowrap justify-content-between align-items-center">
-      <div class="col-4 pt-1">
-      </div>
-      <div class="col-4 text-center">
-        <a class="blog-header-logo text-dark" href="#">New York News</a>
-      </div>
-      
-      <div class="col-4 justify-content-end align-items-center">
-  
-        <div id="logout" class="py-1">
-          <%= link_to 'logout', logout_path, class: 'btn btn-sm btn-outline-secondary' %>
-        </div>
 
-        <div id="user-name"  class="py-2">
-            <%= current_user.name %>
+<div class="row">
 
-              <div class="clear"></div>
-          <div id="user-role" class="">
+    <div class="col-md-3 mb-3">
+        <label for="country">Stories</label>
             
-            <% if current_user.type == 'ChiefEditor' %>
-            Chief Editor
-            <% end %>
-
-          </div>
-
-        </div>
-
-        <%# <div class="clear"></div> %>
-        
-      </div>
-    </div>
-  </header>
-
-  <div class="row">
-
-          <div class="col-md-3 mb-3">
-            <label for="country">Stories</label>
             <div class="d-block">
 
-              <% if !@creator.nil? && @creator == 'true' %>
+              <% if !@my_stories.nil? && @my_stories == 'true' %>
 
                 <%= link_to 'All', root_url, class: 'btn btn-outline-primary' %>
               
-                <%= link_to 'My Stories', root_url + '?creator=true', class: 'btn btn-primary' %>
+                <%= link_to 'My Stories', root_url + '?ms=true', class: 'btn btn-primary' %>
 
               <% else %>
 
                 <%= link_to 'All', root_url, class: 'btn btn-primary' %>
 
-                <%= link_to 'My Stories', root_url + '?creator=true', class: 'btn btn-outline-secondary' %>
+                <%= link_to 'My Stories', root_url + '?ms=true', class: 'btn btn-outline-primary' %>
               
               <% end %>
 
-
-
             </div>
 
-          </div>
+    </div>
 
-          <div class="col-md-3 mb-3">
-            <label for="country">Writer | Reviewer</label>
-            <select class="custom-select d-block w-100" id="country" required="">
-              <option value="">All</option>
-                <% @writers.each do |writer| %>
-                <option value="<%=writer.id%>>"><%=writer.name%></option>
-              <% end %>
+    <div class="col-md-3 mb-3">
+    
+        <label for="writer_or_reviewer">Writer or Reviewer</label>
+            
+        <select class="form-control selectpicker" id="writer_or_reviewer" required="">
+    
+            <option value="">All Writers</option>
+    
+            <% @writers.each do |writer| %>
+    
+            <option value="<%=writer.id%>" <%= @writer_or_reviewer == writer.id ? 'selected' : '' %> ><%=writer.name%></option>
+    
+            <% end %>
 
-            </select>
-            <div class="invalid-feedback">
-              Please select a valid country.
-            </div>
-          </div>
-
-          <div class="col-md-3 mb-3">
-            <label for="state">Status</label>
-            <select class="custom-select d-block w-100" id="state" required="">
-              <option value="">All</option>
-              <option value="0">Unassigned</option>
-              <option value="1">Draft</option>
-              <option value="2">For Review</option>
-              <option value="3">In Review</option>
-              <option value="4">Pending</option>
-              <option value="5">Approved</option>
-              <option value="6">Published</option>
-              <option value="7">Archived</option>
-            </select>
-            <div class="invalid-feedback">
-              Please provide a valid state.
-            </div>
-          </div>
-
-          <div class="col-md-3 mb-3">
-            <a class="py-4  w-100 btn btn-outline-primary float-right" href="#">New Story</a>
-          </div>
-
-
-
+        </select>
+    
+        <div class="invalid-feedback">
+            Please select a valid country.
         </div>
+    
+    </div>
+
+    <div class="col-md-3 mb-3">
+    
+        <label for="status">Status</label>
+
+        <select id="status" class="form-control selectpicker" >
+    
+            <option value="">All Status</option>
+            <option value="unassigned" <%= @status == 'unassigned' ? 'selected' : '' %> >Unassigned</option>
+            <option value="draft" <%= @status == 'draft' ? 'selected' : '' %> >Draft</option>
+            <option value="for_review" <%= @status == 'for_review' ? 'selected' : '' %> >For Review</option>
+            <option value="in_review" <%= @status == 'in_review' ? 'selected' : '' %> >In Review</option>
+            <option value="pending" <%= @status == 'pending' ? 'selected' : '' %> >Pending</option>
+            <option value="approved" <%= @status == 'approved' ? 'selected' : '' %>>Approved</option>
+            <option value="published" <%= @status == 'published' ? 'selected' : '' %> >Published</option>
+            <option value="archived" <%= @status == 'archived' ? 'selected' : '' %> >Archived</option>
+    
+        </select>
+            
+        <div class="invalid-feedback">
+            Please provide a valid state.
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <% if current_user.type == 'ChiefEditor' %>
+            <%= link_to 'New Story', stories_new_path, class: 'py-4  w-100 btn btn-outline-primary float-right' %>
+        <% end %>
+    </div>
+
+</div>
+
+<%= render template: 'commons/messages.html.erb' %>
 
 
 
-  <div class="row mb-2">
+<div class="row mb-2">
+
+<% if @pagination.total_of_records > 0 %>
 
     <% @stories.each do |story| %>
 
     <div class="col-md-12">
     
-      <div class="card flex-md-row mb-4 box-shadow">
+        <div class="card flex-md-row mb-4 box-shadow">
         
-        <div class="card-body d-flex flex-column align-items-start">
+            <div class="card-body d-block block-column align-items-start">
         
-          <div class="mb-1 text-muted">Story <%= story.id %></div>
-          <h3 class="mb-1">
-            <a class="text-dark" href="#"><%= story.headline %></a>
-          </h3>
+                <div class="mb-1">
+            
+                    <div class="d-inline-block text-muted">
+                        Story <%= story.id %>
+                    </div>
 
-          <%# <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p> %>
+                    <div class="float-right d-block">
 
-          <p class="card-text mb-auto mb-2"><%= story.body %></p>
-          
-          <div class="d-flex justify-content-between align-items-center py-4">
-                <div class="btn-group">
-                  <%= link_to 'View', root_path + 'stories/' + story.id.to_s + '/view', class: 'btn btn-sm btn-outline-secondary' %>
-                  <%= link_to 'Edit', root_path + 'stories/' + story.id.to_s + '/edit' , class: 'btn btn-sm btn-outline-secondary' %>
+                      <% if story.status == 'unassigned' %>
+
+                        <div class="btn btn-sm btn-light">
+                            Unassigned
+
+                    <% elsif story.status == 'draft' %>
+
+                        <div class="btn btn-sm btn-secondary">
+                            Draft
+
+                    <% elsif story.status == 'for_review' %>
+
+                        <div class="btn btn-sm btn-primary">
+                            For Review
+
+                    <% elsif story.status == 'in_review' %>
+
+                        <div class="btn btn-sm btn-warning">
+                            In Review
+
+                    <% elsif story.status == 'pending' %>
+
+                        <div class="btn btn-sm btn-warning">
+                            Pending
+
+                    <% elsif story.status == 'approved' %>
+
+                        <div class="btn btn-sm btn-secondary">
+                            Approved
+
+                    <% elsif story.status == 'published' %>
+
+                        <div class="btn btn-sm btn-success">
+                            Published
+
+                    <% elsif story.status == 'archived' %>
+
+                        <div class="btn btn-sm btn-dark">
+                            Archived
+
+                    <% end %>
+                
+                        </div>
+              
+                    </div>
+            
+
                 </div>
-                <%# <small class="text-muted">9 mins</small> %>
-              </div>
 
-          <%# <a href="#">Continue reading</a> %>
+                <h3 class="mb-1">
+                    <a class="text-dark" href="#"><%= story.headline %></a>
+                </h3>
+
+                <p class="card-text mb-auto mb-2"><%= story.body %></p>
+            
+                <div class="d-flex justify-content-between align-items-center py-4">
+                    <div class="btn-group">
+                        <%= link_to 'Edit', root_path + 'stories/' + story.id.to_s + '/edit' , class: 'btn btn-sm btn-outline-secondary' %>
+                    </div>
+                </div>
         
-        </div>
+            </div>
         
 
-        <div class="float-right">
-          <strong class="d-inline-block mb-2 text-success">
-          <%= story.status %>
-          </strong>
-          
         </div>
-        
-        <%# <img class="card-img-right flex-auto d-none d-md-block" data-src="holder.js/200x250?theme=thumb" alt="Card image cap"> %>
-      
-      </div>
-    
+
+
     </div>
+
     <% end %>
 
-    <%# <div class="col-md-12">
-    
-      <div class="card flex-md-row mb-4 box-shadow">
-        
-        <div class="card-body d-flex flex-column align-items-start">
-        
-          <div class="mb-1 text-muted">Story 2</div>
-          <h3 class="mb-1">
-            <a class="text-dark" href="#">Featured post</a>
-          </h3>
+        <div class="col-md-12">
 
-          <p class="card-text mb-auto mb-2">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-          
-          <a href="#">Continue reading</a>
-        
+            <%= render template: 'commons/pagination.html.erb' %>    
+
         </div>
+
+    <% else %>
+
+        <div class="col-md-12">
         
+            <div class="card inline-md-row mb-4 box-shadow">
+            
+                <div class="text-center card-body d-inline flex-column">
+            
+                    <div class="text-muted">No stories</div>
+            
+                </div>
+                  
+            </div>
 
-        <div class="float-right">
-          <strong class="d-inline-block mb-2 text-primary">Success</strong>
         </div>
-      
-      </div>
+
+    <% end %>
     
-    </div> %>
-
-    
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-
-      <nav aria-label="Page navigation example">
-
-      <%=@offset%>
-      
-      <%=@current_url%>
-      <%=@page%>
-      <%=@total_of_stories%>
-
-        <ul class="pagination justify-content-end">
-
-          <li class="page-item">
-            <a class="page-link" href="<%= root_url + @current_url %>">First</a>
-          </li>
-
-<%# 
-          <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1">Previous</a>
-          </li> %>
-
-          <li class="page-item">
-            <a class="page-link" href="<%= root_url + @previous_page.to_s + @current_url %>">Previous</a>
-          </li>
-
-          <% for i in @min_page..@max_page do %>
-          
-            
-              
-            <% if i ==  @page %>
-              <li class="page-item active">
-              <a class="page-link" href="<%= root_url + i.to_s + @current_url %>">
-                <%=i.to_s%>
-              </a>
-              </li>
-            <% else %>
-              <li class="page-item">
-              <a class="page-link" href="<%= root_url + i.to_s + @current_url %>">
-                <%=i.to_s%>
-              </a>
-              </li>
-            <% end %>
-
-              <%# <%= link_to  i.to_s, root_url + i.to_s, class: 'page-link' %> 
-
-            
-          
-          <% end %>
-
-          <%# <li class="page-item"><a class="page-link" href="#">2</a></li> %>
-
-          <%# <li class="page-item"><a class="page-link" href="#">3</a></li> %>
-
-          <li class="page-item">
-            <a class="page-link" href="<%= root_url + @next_page.to_s + @current_url %>">Next</a>
-          </li>
-
-          <li class="page-item">
-            <a class="page-link" href="<%= root_url + @max_pages.to_s + @current_url %>">Last</a>
-          </li>
-
-        </ul>
-
-      </nav>
-
-    </div>
-  </div>
-  
 </div>
+    
 
-<%# 
-<footer class="blog-footer">
-  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-  <p>
-    <a href="#">Back to top</a>
-  </p>
-</footer>
-%>
-
-<footer class="text-muted">
-  <div class="container">
-    <p class="float-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
-    <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>
-  </div>
-</footer>

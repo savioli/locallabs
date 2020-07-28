@@ -3,13 +3,38 @@ class SessionsController < ApplicationController
 
     if current_user
 
-      redirect_to root_url, notice: 'Logged In!'
+      redirect_to root_url
 
     end
     
   end
 
   def create
+
+    # TODO: Better validation
+
+
+    email = params[:email]
+
+    slug = params[:slug]
+
+    password = params[:password]
+
+    # u = User.new
+
+    # u.email = email
+    # u.password = password
+
+    # u.valid?
+
+    # if u.validate
+    if ( slug.length < 3 ) && ( password.length < 1 )
+
+      flash[:danger] = I18n.t 'invalid-fields'
+
+      redirect_to login_path and return
+    
+    end
 
     user = User.where(email: params[:email]).first
 
@@ -23,33 +48,40 @@ class SessionsController < ApplicationController
 
           session[:user_id] = user.id
 
-          redirect_to root_url, notice: 'Logged In!'
+          redirect_to root_url
 
         else
 
-          # flash.now[:alert] = "E-mail or password is invalid!EP"
-          # render "new"
-          redirect_to login_path, notice: 'E-mail or password is invalid!EP'
+          flash[:danger] = I18n.t 'incorrect-password'
+
+          redirect_to login_path
 
         end
 
       else
 
-        # flash.now[:alert] = "E-mail or password is invalid!SLUG"
-        # render "new"
-        redirect_to login_path, notice: 'E-mail or password is invalid!SLUG'
+        flash[:danger] = I18n.t 'incorrect-slug'
+
+        redirect_to login_path
 
       end
 
     else
 
-      redirect_to login_path, notice: 'E-mail or password is invalid!SLUG'
+      flash[:danger] = I18n.t 'account-not-found'
+
+      redirect_to login_path
 
     end
   end
 
   def destroy
+    
     session[:user_id] = nil
-    redirect_to login_path, notice: 'Logged out!'
+
+    flash[:danger] = I18n.t 'logout'
+    
+    redirect_to login_path
+
   end
 end

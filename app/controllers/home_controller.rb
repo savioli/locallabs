@@ -5,12 +5,12 @@ class HomeController < ApplicationController
 
     # My Stories param
 
-    creator = params[:creator]
+    my_stories = params[:ms]
     
-    # Checks whether the creator parameter is not null
-    if !creator.nil?
+    # Checks whether the my_stories parameter is not null
+    if !my_stories.nil?
           
-      if creator == '' || !creator.eql?('true')
+      if my_stories == '' || !my_stories.eql?('true')
 
         redirect_to root_url and return
 
@@ -18,13 +18,13 @@ class HomeController < ApplicationController
 
     end
 
-    @creator = creator
+    @my_stories = my_stories
 
     # Writer (Writer or Reviewer) param
 
     writer_or_reviewer = params[:writer]
 
-    # Checks whether the creator parameter is not null
+    # Checks whether the my_stories parameter is not null
     if !writer_or_reviewer.nil?
           
       if writer_or_reviewer == ''
@@ -38,7 +38,7 @@ class HomeController < ApplicationController
     # Status param
     status = params[:status]
 
-    # Checks whether the creator parameter is not null
+    # Checks whether the my_stories parameter is not null
     if !status.nil?
           
       if status == ''
@@ -50,153 +50,85 @@ class HomeController < ApplicationController
     end
 
     @status = status
+    @writer_or_reviewer = writer_or_reviewer.to_i
 
+    args = { }
 
-    # Define a listing limit
-    limit = 3
+    if !my_stories.nil?
+
+      if current_user.is_chief_editor?
+        args = args.merge( { :creator_id => current_user.id } )
+      else
+        args = args.merge( { :writer_id => current_user.id } )
+      end
+
+    end
+
+    if !writer_or_reviewer.nil?
+      args = args.merge( { :writer_id => writer_or_reviewer } )
+    end
+
+    if !status.nil?
+      args = args.merge( { :status => status } )
+    end
 
     # Gets the stories count
-    total_of_stories = Story.count
-
-    # Calculates the maximum page
-    max_pages = total_of_stories / limit
-
-    max_pages = max_pages.ceil
-
+    if args.length == 0
+      total_of_stories = Story.count
+    else
+      total_of_stories = Story.where( args ).count
+    end
+    
     # Get the page parameter
     page = params[:id]
 
     # Checks whether the page parameter is not null
     if !page.nil?
-      
-      page = page.delete('^0-9')
 
-      if page == ''
+      page = page.to_i
+
+      pagination = Paginator.new(total_of_stories, page)
+
+      # pagination.max_pages <= 0
+      if page <= 0 || page > pagination.max_pages
+
+        flash[:danger] = I18n.t 'page-does-not-exist'
 
         redirect_to root_url and return
-
-      else
-
-        page = page.to_i
-
-        if page.is_a? Integer
-
-          redirect_to root_url and return if page <= 0 || (page - 1) > max_pages
-
-        end
 
       end
 
     else
-      # If the page parameter is null we use 
-      # the default page the first page
 
       page = 1
 
+      pagination = Paginator.new(total_of_stories, page)
+
     end
 
-    # Calculates the offset
-    offset = (page - 1) * limit
+    @pagination = pagination
 
-    # TODO: Comment more
-    @page = page
-    @offset = offset
-    @total_of_stories = Story.count
 
-    delta = 4
-
-    min_page = page - delta
-
-    min_page = 1 if min_page <= 0
-
-    @min_page = min_page
-
-    max_page = page + delta
-
-    max_page = max_pages + 1 if max_page > max_pages
-
-    @max_page = max_page
-
-    @max_pages = max_pages + 1
-
-    @previous_page = page - 1
-
-    @next_page = page + 1
-
-    @next_page = @max_pages if @next_page > @max_pages
-
-    @previous_page = 1 if @previous_page <= 0
-
-    @stories = Story.limit(limit).offset(offset)
+    if args.length == 0
+      @stories = Story.limit(pagination.limit).offset(pagination.offset)
+    else
+      @stories = Story.where( args ).limit(pagination.limit).offset(pagination.offset)
+    end
 
     # Get all writers
     @writers = Writer.all
     
-    is_the_first_param = true
+    uri = URI.parse(request.original_url)
 
-    current_url = ''
+    if !uri.query.nil?
 
-    if !creator.nil? 
+      @current_url = '?' + uri.query
+    
+    else
 
-      if is_the_first_param
-
-        current_url.concat( '?' )
-
-        is_the_first_param = false
-
-      else
-      
-        current_url.concat( '&' )
-
-      end
-
-      current_url.concat( 'creator=' )
-      current_url.concat( creator.to_s )
+      @current_url = ''
 
     end
-
-    # Writer param
-
-    if !writer_or_reviewer.nil? 
-
-      if is_the_first_param
-
-        current_url.concat( '?' )
-
-        is_the_first_param = false
-      
-      else
-      
-        current_url.concat( '&' )
-
-      end
-
-      current_url.concat( 'writer=' )
-      current_url.concat( writer_or_reviewer )
-
-    end
-
-    # Status param
-    if !status.nil? 
-
-      if status
-
-        current_url.concat( '?' )
-
-        is_the_first_param = false
-      
-      else
-      
-        current_url.concat( '&' )
-
-      end
-
-      current_url.concat( 'status=' )
-      current_url.concat( status )
-
-    end
-
-    @current_url = current_url
 
   end
 end

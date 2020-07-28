@@ -1,71 +1,30 @@
-<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
-
-<div class="container">
-  <header class="blog-header py-3 mb-2">
-    <div class="row flex-nowrap justify-content-between align-items-center">
-      <div class="col-4 pt-1">
-      </div>
-      <div class="col-4 text-center">
-        <a class="blog-header-logo text-dark" href="#">New York News</a>
-      </div>
-      
-      <div class="col-4 justify-content-end align-items-center">
   
-        <div id="logout" class="py-1">
-          <%= link_to 'logout', logout_path, class: 'btn btn-sm btn-outline-secondary' %>
-        </div>
-
-        <div id="user-name"  class="py-2">
-            <%= current_user.name %>
-
-              <div class="clear"></div>
-          <div id="user-role" class="">
-            
-            <% if current_user.type == 'ChiefEditor' %>
-            Chief Editor
-            <% end %>
-
-          </div>
-
-        </div>
-
-        <%# <div class="clear"></div> %>
-        
-      </div>
-    </div>
-  </header>
-
   <div class="row">
 
     <div class="col-md-2 mb-3">
 
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <%= link_to 'Home', root_url  %>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">Story <%=@story.id%></li>
-            </ol>
-        </nav>
+        <%= link_to 'Home', root_url  %>
+
+        <span>/</span>
+
+        <span><%=@story.headline%></span>
 
     </div>
 
   </div>
 
-
+  <%= render template: 'commons/messages.html.erb' %>
 
   <div class="row mb-2">
 
     <div class="col-md-12">
     
-<form class="needs-validation" novalidate="">
-
+    <%= form_tag root_url + 'stories/' + @story.id.to_s + '/update', id: 'edit', class: 'needs-validation', autocomplete: 'off' do |form| %>
 
             <div class="mb-3">
               
-              <label for="email">Headline</label>
-              
-              <input type="email" class="form-control" id="email" placeholder="Write a headline..." value="<%=@story.headline%>">
+              <%= label_tag :slug, 'Headline', for: 'headline' %>
+              <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
               
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
@@ -76,10 +35,13 @@
             <div class="row">
               
               <div class="col-md-6 mb-3">
-                <label for="country">Writer</label>
+
+              <%= label_tag :writer_id, 'Writer', for: 'writer_id' %>
+
+              <% if current_user.is_chief_editor? %>
                 
-                <select class="custom-select d-block w-100" id="country" required="">
-                    
+                <select name="writer_id" id="writer_id" class="selectpicker form-control">
+                    <option value="">Select a Writer</option>                    
                     <% @writers.each do |writer| %>
 
                         <% if ( !@writer.nil? ) && ( @writer.id == writer.id )  %>
@@ -88,7 +50,7 @@
                         
                         <% else %>
                         
-                        <option value="<%=writer.id%>>"><%=writer.name%></option>
+                        <option value="<%=writer.id%>"><%=writer.name%></option>
                         
                         <% end %>
 
@@ -96,17 +58,31 @@
 
                 </select>
 
+              <% end %>
+
+              <% if current_user.is_writer? %>
+
+              <%= text_field_tag :hidden_writer_id,  @writer.name, id: 'writer_id', class: 'form-control', disabled: true %>
+              <%= hidden_field_tag :writer_id,  @story.writer_id, id: 'hidden_writer_id', class: 'form-control' %>
+
+              <% end %>
+
                 <div class="invalid-feedback">
                   Please select a valid country.
                 </div>
+
               </div>
 
               <div class="col-md-6 mb-3">
                 
-                <label for="state">Reviewer</label>
+                <%= label_tag :reviewer_id, 'Reviewer', for: 'reviewer_id' %>
+                
+                <% if current_user.is_chief_editor? %>
 
-                <select class="custom-select d-block w-100" id="country" required="">
+                <select name="reviewer_id" id="reviewer_id" class="selectpicker form-control">
                     
+                    <option value="">Select a Reviewer</option>
+
                     <% @writers.each do |writer| %>
 
                         <% if ( !@reviewer.nil? ) && ( @reviewer.id == writer.id )  %>
@@ -115,7 +91,7 @@
                         
                         <% else %>
                         
-                        <option value="<%=writer.id%>>"><%=writer.name%></option>
+                        <option value="<%=writer.id%>"><%=writer.name%></option>
                         
                         <% end %>
 
@@ -123,6 +99,16 @@
 
 
                 </select>
+
+                <% end %>
+
+                <% if current_user.is_writer? %>
+
+                <%= text_field_tag :hidden_reviewer_id,  @reviewer.name, id: 'reviewer_id', class: 'form-control', disabled: true %>
+                
+                <%= hidden_field_tag :reviewer_id,  @story.reviewer_id, id: 'hidden_reviewer_id', class: 'form-control' %>
+
+                <% end %>
 
                 <div class="invalid-feedback">
                   Please provide a valid state.
@@ -132,27 +118,151 @@
             </div>
 
             <div class="mb-3">
-              <%# <label for="address">Address</label> %>
+              <%= label_tag :body, 'Story', for: 'body' %>
               
-            <textarea class="form-control" aria-label="With textarea" placeholder="Write a story...">
-            <%=@story.body%>
-            </textarea>
-
+              <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..." ><%=@story.body%></textarea>
 
               <div class="invalid-feedback">
                 Please enter your shipping address.
               </div>
             </div>
 
+            <% end %>
+
             <div class="row">
 
-              <div class="col-md-3 mb-3">                
-                <button class="btn btn-warning btn-lg btn-block" type="submit">Approve</button>
-              </div>
+                  <% if @story.status == 'draft' %>
 
-              <div class="col-md-3 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Request Changes</button>
-              </div>
+                    <% if current_user.type == 'Writer' && @story.writer_id == current_user.id %>
+
+                      <div class="col-md-3 mb-3">
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'for_review', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+                      
+                      <%= hidden_field_tag :status, 'for_review', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-warning btn-lg btn-block" type="submit" form="for_review">Request Review</button>
+
+                      </div>
+
+                      <% end %>
+
+                      <div class="col-md-3 mb-3">
+                      </div>
+
+                    <% else %>
+                    
+                      <div class="col-md-6 mb-3">
+                      </div>
+
+                    <% end %>
+
+                  <% elsif @story.status == 'for_review' %>
+
+                    <% if current_user.type == 'Writer' && @story.reviewer_id == current_user.id %>
+                    
+
+                      <div class="col-md-3 mb-3">
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'in_review', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+                      
+                      <%= hidden_field_tag :status, 'in_review', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-warning btn-lg btn-block" type="submit" form="in_review">In Review</button>
+
+                      <% end %>
+
+                      </div>
+
+                      <div class="col-md-3 mb-3">
+                      </div>
+
+                    <% else %>
+                    
+                      <div class="col-md-6 mb-3">
+                      </div>
+
+                    <% end %>
+                  
+                  <% elsif @story.status == 'in_review' %>
+
+                    <% if current_user.type == 'Writer' && @story.reviewer_id == current_user.id %>
+
+
+                      <div class="col-md-3 mb-3">                    
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'approve', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+                      <%= hidden_field_tag :status, 'approved', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-primary btn-lg btn-block" type="submit" form="approve">Approve</button>
+
+                      <% end %>
+
+                      </div>
+
+                      <div class="col-md-3 mb-3">                    
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'peding', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+                      <%= hidden_field_tag :status, 'pending', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-warning btn-lg btn-block" type="submit" form="peding">Request Changes</button>
+
+                      <% end %>
+
+                      </div>
+                    
+                    <% else %>
+                    
+                      <div class="col-md-6 mb-3">
+                      </div>
+
+                    <% end %>
+
+                  <% elsif @story.status == 'approved' %>
+
+                    <% if current_user.type == 'ChiefEditor' %>
+
+                      <div class="col-md-3 mb-3">                    
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'published', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+                      <%= hidden_field_tag :status, 'published', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-primary btn-lg btn-block" type="submit" form="published">Publish</button>
+
+                      <% end %>
+
+                      </div>
+
+                      <div class="col-md-3 mb-3">                    
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'archived', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+                      <%= hidden_field_tag :status, 'archived', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-dark btn-lg btn-block" type="submit" form="archived">Archived</button>
+
+                      <% end %>
+
+                      </div>
+
+                    <% else %>
+                    
+                      <div class="col-md-6 mb-3">
+                      </div>
+
+                    <% end %>
+
+                  <% else %>
+                    
+                    <div class="col-md-6 mb-3">
+                    </div>
+    
+                  <% end %>
+
+
 
               <div class="col-md-2 mb-3">
               </div>
@@ -162,23 +272,19 @@
               </div>
 
               <div class="col-md-2 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+                <button class="btn btn-primary btn-lg btn-block" type="submit" form="edit">Save</button>
               </div>
               
             </div>
 
             
-          </form>
+          
     </div>
     
   </div>
   
-</div>
 
-<footer class="blog-footer">
-  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-  <p>
-    <a href="#">Back to top</a>
-  </p>
-</footer>
-<%#= @story.methods.inspect %>
+  <!-- -->
+
+  <%= render template: 'comments/comments.html.erb' %>
+

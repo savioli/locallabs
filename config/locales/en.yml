@@ -30,4 +30,14 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+
+  no-permission-to-change-status: "You don't have permission to change the status of this story."
+  review-requested: "Review requested."
+  invalid-change-of-status: "Invalid change of status."
+  invalid-status: "Invalid status."
+  account-not-found: "Sorry, we can't find an account with this email address."
+  incorrect-password: "Incorrect password. Please try again."
+  incorrect-slug: "Incorrect Company ID. Please try again."
+  logout: "You have been successfully disconnected."
+  invalid-fields: "Please enter the fields correctly."
+  page-does-not-exist: "Page doesn't exists."

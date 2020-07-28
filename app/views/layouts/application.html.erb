@@ -7,9 +7,20 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
   </head>
 
   <body>
+
+    <div class="container">
+    
+    <%= render template: 'commons/header.html.erb' %>
+    
     <%= yield %>
+
+    </div>
+
+    <%= render template: 'commons/footer.html.erb' %>
+
   </body>
 </html>
