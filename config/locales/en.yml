@@ -30,9 +30,36 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+  time:
+    formats:
+      default: "%m/%d/%Y %H:%M"
+      date: "%m/%d/%Y"
 
+  no-permission-to-create-new-stories: "You don't have permission to create new stories."
   no-permission-to-change-status: "You don't have permission to change the status of this story."
+  no-permission-to-change-body: "You don't have permission to change the body of this story."
+  no-permission-to-access-story: "You don't have permission to access the content of this story."
+  no-permission-to-change-story: "The story cannot be changed."
+  no-permission-to-change-story: "The story cannot be changed."
+  no-permission-to-change-story-in-review: the story cannot be changed while it is being reviewed
+  # writer-reassign-not-possible: "It is not possible to reassign the writer."
+  # reviewer-reassign-not-possible: "It is not possible to reassign the reviewer."
+  writer-and-reviewer-connot-be-the-same: "The Writer and the Reviewer cannot be the same."
+  writer-not-found: "Writer not found."
+  story-not-found: "Story not found."
+  not-assigned-yet: "Not assigned yet"
+  reviewer-not-found: "Reviewer not found."
   review-requested: "Review requested."
+
+  story-created: "The Story has been created."
+  story-not-created: "The Story could not be created."
+  story-edited: "The Story edited."
+  
+
+
   invalid-change-of-status: "Invalid change of status."
   invalid-status: "Invalid status."
   account-not-found: "Sorry, we can't find an account with this email address."

@@ -4,10 +4,9 @@ class StoriesController < ApplicationController
   def new
 
     # Constraint 1.1
-
     if current_user.is_writer?
       
-      flash[:danger] = "You don't have permission to create new stories."
+      flash[:danger] = I18n.t 'no-permission-to-create-new-stories'
 
       redirect_to root_url and return
 
@@ -21,27 +20,27 @@ class StoriesController < ApplicationController
   def create
 
     # Constraint 1.1
-    
+    # Only Chief Editors can create stories    
     if current_user.is_writer?
 
-      flash[:danger] = "You don't have permission to create new stories."
+      flash[:danger] = I18n.t 'no-permission-to-create-new-stories'
 
       redirect_to root_url
       
     end 
 
-    # TODO: add validation with feedback
-
     headline = params[:headline]
-    
     writer_id = params[:writer_id]
     reviewer_id = params[:reviewer_id]
 
+    valid_writer_id = !writer_id.nil? && !writer_id.eql?('')
+    valid_reviewer_id = !reviewer_id.nil? && !reviewer_id.eql?('')
+
     # Constraint 2
+    # A story cannot have the same user as both ​ Writer ​ and ​ Reviewer; ​
+    if valid_writer_id && ( writer_id == reviewer_id )
 
-    if ( !writer_id.nil? && !writer_id.eql?('') ) && writer_id == reviewer_id 
-
-      flash[:danger] = "The Writer and the Reviewer cannot be the same."
+      flash[:danger] = I18n.t 'writer-and-reviewer-connot-be-the-same'
 
       redirect_to request.referrer and return
     
@@ -49,84 +48,89 @@ class StoriesController < ApplicationController
 
     story = Story.new
 
-    # Constraint 4
-
     story.status = 'unassigned'
 
-    if !writer_id.nil? && !writer_id.eql?('')
-      # status = 'draft'
+    # Constraint 4
+    # A story goes automatically from UNASSIGNED to DRAFT 
+    # when the Chief Editor sets the ​Writer ​
+    if valid_writer_id
+      
       story.status = 'draft'
+      
     end
 
-    # Does not creates with body because of: 
+    # Does not creates with body because of:
     # Constraint 5
     # Only writers can update the body of a story.
 
     story.headline = headline
 
-    story.creator_id = current_user.id
+    # Set the creator of the story
+    story.creator = current_user
     
     # Validates the writer_id
-
-    if !writer_id.nil?
+    if valid_writer_id
   
       writer_id = writer_id.delete('^0-9')
-
-      if writer_id == ''
-
-        writer_id = nil
-
-      else
-
-        writer_id = writer_id.to_i
-
-      end
-
-    else
-      
-      flash[:danger] = "Invalid Writer."
-
-      redirect_to root_url and return
+      writer_id = writer_id.to_i
 
     end
 
-    story.writer_id = writer_id
+    # Set the writer if writer_id is valid
+    if valid_writer_id
+
+      begin
+      
+        writer = Writer.find(writer_id)
+      
+      rescue => exception
+
+        flash[:danger] = I18n.t 'writer-not-found'
+
+        redirect_to root_url and return
+        
+      end
+
+      story.writer = writer
+
+    end
 
     # Validates the reviewer_id
-
-    if !reviewer_id.nil?
+    if valid_reviewer_id
   
       reviewer_id = reviewer_id.delete('^0-9')
-
-      if reviewer_id == ''
-
-        reviewer_id = nil
-
-      else
-
-        reviewer_id = reviewer_id.to_i
-
-      end
-
-    else
-      
-      flash[:danger] = "Invalid Writer."
-
-      redirect_to root_url and return
+      reviewer_id = reviewer_id.to_i
 
     end
 
-    story.reviewer_id = reviewer_id
+    # Set the reviewer if reviewer_id is valid
+    if valid_reviewer_id
+
+      begin
+      
+        reviewer = Writer.find(reviewer_id)
+      
+      rescue => exception
+
+        flash[:danger] = I18n.t 'writer-not-found'
+
+        redirect_to root_url and return
+        
+      end
+
+      story.reviewer = reviewer
+
+    end
 
     begin
 
       story.save  
 
-      flash[:success] = "The Story has been created. "
+      flash[:success] = I18n.t 'story-created'
 
     rescue => exception
 
-      flash[:danger] = "The Story could not be created. "
+      flash[:success] = I18n.t 'story-not-created'
       
     end
 
@@ -141,7 +145,17 @@ class StoriesController < ApplicationController
     
     story_id = story_id.to_i
 
-    @story = Story.find(story_id)
+    begin
+
+      @story = Story.find(story_id)
+
+    rescue => exception
+
+      flash[:danger] = I18n.t 'story-not-found'
+
+      redirect_to request.referrer and return
+
+    end
 
     writer = @story.writer
 
@@ -152,7 +166,7 @@ class StoriesController < ApplicationController
     else
 
       @writer = Writer.new
-      @writer.name = 'Not assigned yet'
+      @writer.name = I18n.t 'not-assigned-yet'
     
     end
 
@@ -165,17 +179,23 @@ class StoriesController < ApplicationController
     else
 
       @reviewer = Writer.new
-      @reviewer.name = 'Not assigned yet'
+      @reviewer.name = I18n.t 'not-assigned-yet'
 
     end
 
-    if current_user.is_writer? 
+    if current_user.is_writer?
+      
+      # Constraint 12.1
+      # Only the ​ Chief Editor, and the ​ Writer and ​ Reviewer assigned to the story can see the
+      # content of a story before it’s been published
 
+      # So, if not the writer assigned to the story or
+      # not the reviewer assigned to the story
       if ( current_user.id.to_i != @story.writer_id.to_i ) && ( current_user.id != @story.reviewer_id ) 
 
-        flash[:danger] = "You don't have permission to access the content of this story."
+        flash[:danger] = I18n.t 'no-permission-to-access-story'
 
-        redirect_to root_url
+        redirect_to root_url and return
       
       end
 
@@ -188,8 +208,6 @@ class StoriesController < ApplicationController
 
   def update
 
-    # TODO: add validation with feedback
-
     headline = params[:headline]
     body = params[:body]
 
@@ -199,94 +217,103 @@ class StoriesController < ApplicationController
     story_id = params[:id]
     story_id = story_id.to_i
 
-
-    # # Checks whether the page parameter is not null
-    # if !story_id.nil?
-      
-    #   story_id = story_id.delete('^0-9')
-
-    #   if story_id == ''
-
-    #     redirect_to root_url and return
-
-    #   else
-
-    #     story_id = story_id.to_i
-
-    #   end
-
-    # else
-    #   # If the page parameter is null we use 
-    #   # the default page the first page
-
-    #   # redirect_to root_url and return
-
-    # end
+    valid_writer_id = !writer_id.nil? && !writer_id.eql?('')
+    valid_reviewer_id = !reviewer_id.nil? && !reviewer_id.eql?('')
 
     # Constraint 2
+    # A story cannot have the same user as both ​ Writer ​ and ​ Reviewer
+    if ( valid_writer_id ) && writer_id == reviewer_id 
 
-    if ( !writer_id.nil? && !writer_id.eql?('') ) && writer_id == reviewer_id 
-
-      # TODO: add feedback
-      flash[:danger] = "The Writer and the Reviewer cannot be the same."
-
-      redirect_to request.referrer and return
-
-    end
-
-    story = Story.find( story_id )
-
-    if ( ! story.writer_id.nil? ) && ( story.writer_id != writer_id.to_i )
-      #  (!story.writer_id.eql?(writer_id))  
-    #   #  && ( writer_id.nil? || writer_id.eql?('') )
-
-    #   # TODO: enhance commment
-    #   # After that writer is assigned, it's not possible unassing
-    #   # TODO: add feedback
-
-      flash[:danger] = "The Writer has already assigned."
+      flash[:danger] = I18n.t 'writer-and-reviewer-connot-be-the-same'
 
       redirect_to request.referrer and return
 
     end
 
-    # status = nil
+    begin
+
+      story = Story.find(story_id)
+
+    rescue => exception
+
+      flash[:danger] = I18n.t 'story-not-found'
+
+      redirect_to root_url and return
+
+    end
+
+    # If a story has been approved, published,
+    # or archived, it cannot be changed
+    deny_update = (story.status == 'approved')
+    deny_update = (story.status == 'published') || deny_update
+    deny_update = (story.status == 'archived') || deny_update
+
+    if deny_update
+
+      flash[:danger] = I18n.t 'no-permission-to-change-story'
+
+      redirect_to request.referrer and return
+
+    end
 
     # Constraint 1.2
     if current_user.is_writer?
+
+      deny_update = ( story.status == 'for_review' ) || ( story.status == 'in_review' )
+
+      if deny_update
+  
+        flash[:danger] = I18n.t 'no-permission-to-change-story-in-review'
+  
+        redirect_to request.referrer and return
+  
+      end  
       
       # Constraint 8
-
+      # If a story has a PENDING status, it goes automatically 
+      # from PENDING to DRAFT if the ​ writer ​ updates the body (content).
       if story.status == 'pending'
       
         if !body.eql?(story.body)
           
-          # If the body has changed  
-          # status = 'draft'
+          # If the body has changed, 
+          # the status go from PENDING to DRAFT
           story.status = 'draft'
           
         end
 
       end
 
-      story.headline = headline
-      story.body = body
-      
-      # if !status.nil?
-      #   story.status = status
-      # end
+      # Constraint 5
+      # Only writers can update the body of a story.
+      writer_assigned_to_the_story = !story.writer_id.nil? && ( story.writer_id == current_user.id )
 
+      if writer_assigned_to_the_story
+
+        story.headline = headline
+        story.body = body
+
+      else
+
+        flash[:danger] = I18n.t 'no-permission-to-change-body'
+
+        redirect_to request.referrer and return
+
+      end
+      
       story.save
 
     elsif current_user.is_chief_editor?
 
       # Constraint 4
-
+      # A story goes automatically from UNASSIGNED to DRAFT 
+      # when the ​ Chief Editor sets the ​ Writer
       if story.status == 'unassigned'
 
-        if !writer_id.nil? && !writer_id.eql?('')
-          # status = 'draft'
+        if valid_writer_id
+
           story.status = 'draft'
+
         end
 
       end
@@ -295,253 +322,106 @@ class StoriesController < ApplicationController
       # Constraint 5
       # Only writers can update the body of a story.
 
-      # story = Story.new
       story.headline = headline
-      story.writer_id = writer_id
-      story.reviewer_id = reviewer_id
 
-      # if !status.nil?
+      if valid_writer_id
+    
+        writer_id = writer_id.delete('^0-9')
+        writer_id = writer_id.to_i
+
+      end
+
+      # Set the writer if writer_id is valid
+      if valid_writer_id
+
+        begin
         
-      #   story.status = status
+          writer = Writer.find(writer_id)
+        
+        rescue => exception
 
-      # end
-      flash[:success] = "The story was successfully edited."
-      story.save
-   
-    end
+          flash[:danger] = I18n.t 'writer-not-found'
 
-    redirect_to root_url
+          redirect_to request.referrer and return
+          
+        end
+
+        story.writer = writer
+        
+      end
+
+      # Validates the reviewer_id
+      if valid_reviewer_id
+    
+        reviewer_id = reviewer_id.delete('^0-9')
+        reviewer_id = reviewer_id.to_i
+
+      end
+
+      # Set the reviewer if reviewer_id is valid
+      if valid_reviewer_id
+
+        begin
+        
+          reviewer = Writer.find(reviewer_id)
+        
+        rescue => exception
+
+          flash[:danger] = I18n.t 'writer-not-found'
+
+          redirect_to request.referrer and return
+          
+        end
+
+        story.reviewer = reviewer
+          
+      end
+
+        flash[:success] = I18n.t 'story-edited'
+        
+        story.save
+    
+      end
+
+    redirect_to request.referrer and return
 
   end
 
   def status
     
     story_id = params[:id]
-    story_id = story_id.to_i
-
-    all_status = [ 'unassigned', 
-                   'draft', 
-                   'for_review', 
-                   'in_review', 
-                   'pending', 
-                   'approved', 
-                   'published', 
-                   'archived' ]
-
-    status = params[:status]
-
-    if status.nil? || status.eql?('') || !all_status.include?(status)
       
-      flash[:danger] = I18n.t 'invalid-status'
+    begin
 
-      redirect_to request.referrer
+      story = Story.find(story_id)
 
+    rescue => exception
+
+      flash[:danger] = I18n.t 'story-not-found'
+
+      redirect_to root_url and return
+            
     end
 
-    story = Story.find(story_id)
+    stories_service = StoriesService.new
 
-    if story.status == 'unassigned'
-
-      # draft
-      if status == 'draft'
-
-        if current_user.is_writer?
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'invalid-change-of-status'
-        
-        redirect_to request.referrer and return
-
-      end
-    
-    elsif story.status == 'draft'
-
-      if status == 'for_review'
-      
-        # Constraint 6.1
-        if current_user.id != story.writer_id
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'invalid-change-of-status'
-
-        redirect_to request.referrer and return
-
-      end
-
-    elsif story.status == 'for_review'
-
-      # in_review
-      if status == 'in_review'
-
-        # Constraint 7.1
-        if current_user.id != story.reviewer_id
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'invalid-change-of-status'
-
-        redirect_to request.referrer and return
-
-      end
-
-    elsif story.status == 'in_review'
-
-      # pending
-      if status == 'pending'
-
-        # Constraint 7.1
-        if current_user.id != story.reviewer_id
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      # approved
-      elsif status == 'approved'
-
-        # Constraint 7.1
-        if current_user.id != story.reviewer_id
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'invalid-change-of-status'
-
-        redirect_to request.referrer and return
-
-      end
-
-    elsif story.status == 'pending'
-
-      flash[:danger] = I18n.t 'invalid-change-of-status'
-
-      redirect_to request.referrer and return
-
-    elsif story.status == 'approved'
-
-      # published
-      if status == 'published'
-
-        if !current_user.is_chief_editor?
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      # archived
-      elsif status == 'archived'
-
-        if !current_user.is_chief_editor?
-
-          flash[:danger] = I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'invalid-change-of-status'
-
-        redirect_to request.referrer and return
-
-      end     
-
-    elsif story.status == 'published'
-
-      # archived
-      if status == 'archived'
-
-        if !current_user.is_chief_editor?
-
-          flash[:danger] = I18n.t  I18n.t 'no-permission-to-change-status'
-
-          redirect_to request.referrer and return
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'invalid-change-of-status'
-
-        redirect_to request.referrer and return
-
-      end
-
-    elsif story.status == 'archived'
-
-      flash[:danger] = I18n.t 'invalid-change-of-status'
-
-      redirect_to request.referrer and return
-
-    end
-   
-    if status == 'for_review'
-    
-      flash[:success] = I18n.t 'review-requested'
-
-    elsif status == 'in_review'
-
-      flash[:success] = "Story in revision."
-
-    elsif status == 'pending'
-
-      flash[:success] = "Story pending."
-
-    elsif status == 'approved'
-
-      flash[:success] = "Story approved."
-
-    elsif status == 'published'
-
-      flash[:success] = "Story published."
-
-    elsif status == 'archived'
-
-      flash[:success] = "Story archived."
-
-    end
+    new_status = params[:status]
 
     begin
-      
-      story.status = status
-      story.save
-  
+
+      stories_service.change_status(current_user, story, new_status)
+
     rescue => exception
       
+      flash[:danger] = I18n.t exception.message
+
+      redirect_to request.referrer and return
+
     end
 
     redirect_to request.referrer and return
 
   end
+
 
 end

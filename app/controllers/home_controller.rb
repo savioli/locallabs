@@ -10,7 +10,7 @@ class HomeController < ApplicationController
     # Checks whether the my_stories parameter is not null
     if !my_stories.nil?
           
-      if my_stories == '' || !my_stories.eql?('true')
+      if !my_stories.eql?('true')
 
         redirect_to root_url and return
 
@@ -29,7 +29,7 @@ class HomeController < ApplicationController
           
       if writer_or_reviewer == ''
 
-        redirect_to root_url and return
+        # redirect_to root_url and return
 
       end
 
@@ -64,7 +64,7 @@ class HomeController < ApplicationController
 
     end
 
-    if !writer_or_reviewer.nil?
+    if !writer_or_reviewer.nil? && !writer_or_reviewer.eql?('all')
       args = args.merge( { :writer_id => writer_or_reviewer } )
     end
 
@@ -110,7 +110,7 @@ class HomeController < ApplicationController
 
 
     if args.length == 0
-      @stories = Story.limit(pagination.limit).offset(pagination.offset)
+      @stories = Story.limit(pagination.limit).order(id: :desc).offset(pagination.offset)
     else
       @stories = Story.where( args ).limit(pagination.limit).offset(pagination.offset)
     end

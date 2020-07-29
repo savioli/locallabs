@@ -211,16 +211,21 @@ footer p {
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
 
-#user-name {
+#username {
+  
+}
+#role {
   font-weight: bold;
-  float: right;
 }
-#user-role {
-  float: right;
+
+#details {
+  padding-right: 10px;
 }
+
 #logout {
   float: right;
 }
-.clear {
-  clear: both;
+
+#body {
+  min-height: 300px;
 }

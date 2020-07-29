@@ -6,6 +6,10 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+
+# Destroy all Stories
+Story.destroy_all
+
 # Destroy all Users
 User.destroy_all
 
@@ -18,8 +22,6 @@ Writer.destroy_all
 # Destroy all Organizations
 Organization.destroy_all
 
-# Destroy all Stories
-Story.destroy_all
 
 Story.connection.execute('ALTER TABLE stories AUTO_INCREMENT = 1')
 Writer.connection.execute('ALTER TABLE users AUTO_INCREMENT = 1')
@@ -31,27 +33,34 @@ organization = Organization.create(slug: 'nyn',
 
 # Create a Chief Editor
 ChiefEditor.create(name: 'Harvey Chief Editor',
-                   email: 'chiefeditor@nyn.com',
-                   password: 'chiefeditor',
+                   email: 'ce@nyn.com',
+                   password: 'c',
                    organization: organization)
 
 # Create a Writer
 Writer.create(name: 'Mike Writer',
-              email: 'writer@nyn.com',
-              password: 'writer',
+              email: 'w@nyn.com',
+              password: 'w',
               organization: organization)
 
-# Create others Writers
-15.times do |_index|
-  Writer.create(name: Faker::Name.unique.name,
-                email: Faker::Internet.email,
-                password: 'writer',
-                organization: organization)
-end
+# Create a Writer
+Writer.create(name: 'Louis Reviewer',
+              email: 'r@nyn.com',
+              password: 'r',
+              organization: organization)
 
-# Create Stories
-50.times do |_index|
-  Story.create(headline: Faker::Lorem.sentence(6, 0).chop,
-               body: Faker::Lorem.sentence(word_count: 30),
-               status: Random.rand(1..7))
-end
+
+# Create others Writers
+# 15.times do |_index|
+#   Writer.create(name: Faker::Name.unique.name,
+#                 email: Faker::Internet.email,
+#                 password: 'writer',
+#                 organization: organization)
+# end
+
+# # Create Stories
+# 50.times do |_index|
+#   Story.create(headline: Faker::Lorem.sentence(6, 0).chop,
+#                body: Faker::Lorem.sentence(word_count: 30),
+#                status: Random.rand(1..7))
+# end

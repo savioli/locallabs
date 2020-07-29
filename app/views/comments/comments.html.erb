@@ -20,12 +20,13 @@
 
 </div>
 
+<% if ( @story.body.nil? || @story.body.eql?('') ) || @story.status.eql?('for_review') || @story.status.eql?('in_review') %>
 <div class="row">
     <div class="col-md-12 mb-3">
 
         <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'for_review', class: 'needs-validation', autocomplete: 'off' do |form| %>    
         
-            <textarea id="body" name="body" class="form-control" placeholder="Write a comment..." ><%=@story.body%></textarea>
+            <textarea id="comment" name="comment" class="form-control" placeholder="Write a comment..." ><%=@story.body%></textarea>
 
             <div class="invalid-feedback">
             Please enter your shipping address.
@@ -35,6 +36,7 @@
 
     </div>
 </div>
+
 
 <div class="row mb-5">
     <div class="col-md-6">
@@ -52,7 +54,7 @@
     </div>
 
 </div>
-
+<% end %>
 <%#
 <h4>Comments (N)</h4>
 

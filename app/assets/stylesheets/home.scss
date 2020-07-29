@@ -1,3 +1,24 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.content-control {
+    font-size: 35px;
+    height: 30px;
+    color: #007bff;
+    margin-top: -36px;
+    margin-bottom: 6px;
+}
+
+.bt-open, .bt-close {
+    font-size: 35px;
+    cursor: pointer;
+}
+
+.story-content {
+    margin-top: 30px;
+}
+
+.story-content, .bt-close {
+    display: none;
+}

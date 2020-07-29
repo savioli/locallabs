@@ -99,7 +99,7 @@ import { domain } from 'process'
 
 // // });
 
-function addQueryStringParameter( url, newKey, newValue ) {
+function addQueryStringParameter( url, newKey, newValue, hostname = '' ) {
     
     var domain = url
 
@@ -107,7 +107,13 @@ function addQueryStringParameter( url, newKey, newValue ) {
 
     domain = domain.split('?')
 
-    new_url = domain[0]
+
+    if(hostname != '') {
+        new_url = hostname
+    } else {
+        new_url = domain[0]
+    }
+    
 
     var keys = []
     var values = []
@@ -192,8 +198,9 @@ $(function() {
     $('#writer_or_reviewer').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
 
         var domain = window.location.href
+        var hostname = window.location.origin
 
-        var new_url = addQueryStringParameter( domain, 'writer', this.value )
+        var new_url = addQueryStringParameter( domain, 'writer', this.value, hostname )
 
         $(location).attr('href', new_url)
 
@@ -203,11 +210,48 @@ $(function() {
     $('#status').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
 
         var domain = window.location.href
+        var hostname = window.location.origin
 
-        var new_url = addQueryStringParameter( domain, 'status', this.value )
+        var new_url = addQueryStringParameter( domain, 'status', this.value, hostname )
 
         $(location).attr('href', new_url)
 
-    });    
+    });
+    
+    $('.bt-open, .bt-close').on( 'click', function(e){
+
+        console.log($(this).parent().parent().find('.story-content').first())
+
+        var storyContent = $(this).parent().parent().find('.story-content').first()
+
+        var openButton = $(this).parent().find('.bt-open').first()
+        var closeButton = $(this).parent().find('.bt-close').first()
+
+        storyContent.slideToggle(500, function(){
+
+            var isVisible = storyContent.css('display')
+
+
+            // console.log(isVisible)
+            console.log(openButton)
+            console.log(closeButton)
+            if( isVisible == 'none' ) {
+                
+                openButton.css({display: 'inline-block'});
+                closeButton.css({display: 'none'});
+        
+            } else {
+
+                openButton.css({display: 'none'});   
+                closeButton.css({display: 'inline-block'});
+
+            }
+
+        })
+
+        
+
+
+    } )
 
 })
