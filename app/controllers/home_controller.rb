@@ -3,11 +3,12 @@ class HomeController < ApplicationController
 
   def index
 
-    # My Stories param
+    pagination_limit = 7
 
+    # My Stories parameter
     my_stories = params[:ms]
     
-    # Checks whether the my_stories parameter is not null
+    # Checks if the my_stories parameter is not null
     if !my_stories.nil?
           
       if !my_stories.eql?('true')
@@ -18,18 +19,16 @@ class HomeController < ApplicationController
 
     end
 
-    @my_stories = my_stories
 
-    # Writer (Writer or Reviewer) param
-
+    # Writer (Writer or Reviewer) parameter
     writer_or_reviewer = params[:writer]
 
-    # Checks whether the my_stories parameter is not null
+    # Checks if the writer_or_reviewer parameter is not null
     if !writer_or_reviewer.nil?
           
       if writer_or_reviewer == ''
 
-        # redirect_to root_url and return
+        redirect_to root_url and return
 
       end
 
@@ -38,7 +37,7 @@ class HomeController < ApplicationController
     # Status param
     status = params[:status]
 
-    # Checks whether the my_stories parameter is not null
+    # Checks if the status parameter is not null
     if !status.nil?
           
       if status == ''
@@ -49,47 +48,140 @@ class HomeController < ApplicationController
 
     end
 
+    # Pass the parameters to the view
+    @my_stories = my_stories
+
     @status = status
+
     @writer_or_reviewer = writer_or_reviewer.to_i
 
-    args = { }
+    args = {}
+
+    # Mount where of the SQL command
+    my_stories_where = ''
 
     if !my_stories.nil?
 
+      args = args.merge( { creator_id: current_user.id } )
+      
       if current_user.is_chief_editor?
-        args = args.merge( { :creator_id => current_user.id } )
+        
+        my_stories_where = '( creator_id = :creator_id )'
+      
       else
-        args = args.merge( { :writer_id => current_user.id } )
+        
+        my_stories_where = '( writer_id = :creator_id )'
+
       end
 
     end
 
+    writer_or_reviewer_where = ''
+
     if !writer_or_reviewer.nil? && !writer_or_reviewer.eql?('all')
-      args = args.merge( { :writer_id => writer_or_reviewer } )
+
+      args = args.merge( { writer_id: writer_or_reviewer } )
+      args = args.merge( { reviewer_id: writer_or_reviewer } )
+
+      writer_or_reviewer_where = '( ( writer_id = :writer_id ) OR ( reviewer_id = :reviewer_id ) )'
+      
     end
 
-    if !status.nil?
-      args = args.merge( { :status => status } )
-    end
+    status_where = ''
 
-    # Gets the stories count
-    if args.length == 0
-      total_of_stories = Story.count
-    else
-      total_of_stories = Story.where( args ).count
+    if !status.nil? && !status.eql?('all')
+
+      if status == 'unassigned'
+        status = 0
+      elsif status == 'draft'
+        status = 1
+      elsif status == 'for_review'
+        status = 2
+      elsif status == 'in_review'
+        status = 3
+      elsif status == 'pending'
+        status = 4
+      elsif status == 'approved'
+        status = 5
+      elsif status == 'published'
+        status = 6
+      elsif status == 'archived'
+        status = 7
+      end
+
+      args = args.merge( { status: status } )
+
+      status_where = '( status = :status )'
+
     end
     
+    full_where = ''
+    
+    if !my_stories_where.eql?('')
+
+      full_where = my_stories_where
+
+    end
+
+    if !writer_or_reviewer_where.eql?('')
+
+      if !my_stories_where.eql?('')
+
+        full_where = full_where + ' AND ' + writer_or_reviewer_where
+      
+      else
+
+        full_where = writer_or_reviewer_where
+
+      end
+
+    end
+
+    if !status_where.eql?('')
+
+      if !my_stories_where.eql?('') || !writer_or_reviewer_where.eql?('')
+      
+        full_where = full_where + ' AND ' + status_where
+      else
+
+        full_where = status_where
+
+      end
+
+    end
+
+    # Remove from the list all the stories with archived status
+    args = args.merge( { archived: 7 } )    
+
+    if status_where.eql?('') 
+      
+      if full_where.eql?('')
+
+        full_where = ' (status != :archived )'
+
+      else
+
+        full_where = full_where + ' AND (status != :archived )'
+
+      end
+
+    end
+
+    where = Story.where(full_where, args)
+
+    # Gets the stories count
+    total_of_stories = where.count
+        
     # Get the page parameter
     page = params[:id]
 
-    # Checks whether the page parameter is not null
+    # Checks if the page parameter is not null
     if !page.nil?
 
       page = page.to_i
 
-      pagination = Paginator.new(total_of_stories, page)
+      pagination = Paginator.new(total_of_stories, page, pagination_limit)
 
-      # pagination.max_pages <= 0
       if page <= 0 || page > pagination.max_pages
 
         flash[:danger] = I18n.t 'page-does-not-exist'
@@ -102,22 +194,18 @@ class HomeController < ApplicationController
 
       page = 1
 
-      pagination = Paginator.new(total_of_stories, page)
+      pagination = Paginator.new(total_of_stories, page, pagination_limit)
 
     end
 
     @pagination = pagination
 
-
-    if args.length == 0
-      @stories = Story.limit(pagination.limit).order(id: :desc).offset(pagination.offset)
-    else
-      @stories = Story.where( args ).limit(pagination.limit).offset(pagination.offset)
-    end
+    @stories = where.limit(pagination.limit).offset(pagination.offset)
 
     # Get all writers
     @writers = Writer.all
     
+    # Keep filtering parameters in the URL
     uri = URI.parse(request.original_url)
 
     if !uri.query.nil?

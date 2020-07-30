@@ -126,6 +126,8 @@ class StoriesController < ApplicationController
 
       story.save  
 
+
+
       flash[:success] = I18n.t 'story-created'
 
     rescue => exception
@@ -153,7 +155,7 @@ class StoriesController < ApplicationController
 
       flash[:danger] = I18n.t 'story-not-found'
 
-      redirect_to request.referrer and return
+      redirect_to root_url and return
 
     end
 
@@ -423,5 +425,91 @@ class StoriesController < ApplicationController
 
   end
 
+  def comment 
+
+    story_id = params[:id]
+    comment = params[:comment]
+
+    if comment.nil? || comment.eql?('')
+
+      flash[:warning] = I18n.t 'empty-comment-ignored'
+
+      redirect_to request.referrer and return
+
+    end
+      
+    begin
+
+      story = Story.find(story_id)
+
+    rescue => exception
+
+      flash[:danger] = I18n.t 'story-not-found'
+
+      redirect_to root_url and return
+            
+    end
+
+    # It makes sense not to allow comments on approved status onwards
+    deny_comment = story.status.eql?('approved') || story.status.eql?('published') || story.status.eql?('archived')
+
+    if deny_comment
+
+      flash[:danger] = I18n.t 'cannot-add-comments'
+
+      redirect_to request.referrer and return
+
+    end
+
+    # Constraint 9 
+    # Only the ​ Chief Editor, and the ​ Writer and ​ Reviewer assigned to the story can
+    # post/read comments (when open) on the story page.
+
+    is_writer_or_reviewer = ( current_user.id == story.writer_id ) || ( current_user.id == story.reviewer_id )
+
+    if !is_writer_or_reviewer && !current_user.is_chief_editor?
+
+      flash[:danger] = I18n.t 'no-permission-to-post-comments'
+
+      redirect_to request.referrer and return
+
+    end 
+
+    # Constraint 10
+    # A story is opened to comments only if 
+    # no content hasn’t been written yet (fresh story)
+    # or if its status is IN REVIEW, 
+    # other than that the comments section is blocked.
+
+    is_in_review = story.status.eql?('for_review') || story.status.eql?('in_review')
+    is_a_fresh_story = story.body.nil? || story.body.eql?('')
+
+    if !is_a_fresh_story && !is_in_review
+
+      flash[:danger] = I18n.t 'cannot-add-comments'
+
+      redirect_to request.referrer and return
+
+    end
+
+
+    begin
+
+      story.comments.create(comment: comment,
+                            commentator_id: current_user.id )
+
+    rescue => exception
+      
+      flash[:danger] = I18n.t 'comment-not-added'
+
+      redirect_to request.referrer and return
+
+    end
+
+    flash[:success] = I18n.t 'comment-added'
+    
+    redirect_to request.referrer and return
+
+  end
 
 end

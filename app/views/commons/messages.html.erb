@@ -10,6 +10,13 @@
   </div>
 <% end %>
 
+<% if !flash[:warning].nil? %>
+<div class="alert alert-warning" role="alert">
+  <%=flash[:warning]%>
+</div>
+<% end %>
+
+
 <%
 =begin%>
  <div class="alert alert-primary" role="alert">

@@ -13,22 +13,13 @@ class SessionsController < ApplicationController
 
     # TODO: Better validation
 
-
     email = params[:email]
 
     slug = params[:slug]
 
     password = params[:password]
 
-    # u = User.new
-
-    # u.email = email
-    # u.password = password
-
-    # u.valid?
-
-    # if u.validate
-    if ( slug.length < 3 ) && ( password.length < 1 )
+    if ( slug.length < 3 ) || ( password.length < 1 )
 
       flash[:danger] = I18n.t 'invalid-fields'
 

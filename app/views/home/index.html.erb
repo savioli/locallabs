@@ -2,7 +2,9 @@
 
 <div class="row">
 
-    <div class="col-md-3 mb-3">
+    
+    <div class="col-md-2 mb-3">
+    
         <label for="country">Stories</label>
             
             <div class="d-block">
@@ -61,7 +63,7 @@
             <option value="pending" <%= @status == 'pending' ? 'selected' : '' %> >Pending</option>
             <option value="approved" <%= @status == 'approved' ? 'selected' : '' %>>Approved</option>
             <option value="published" <%= @status == 'published' ? 'selected' : '' %> >Published</option>
-            <option value="archived" <%= @status == 'archived' ? 'selected' : '' %> >Archived</option>
+            <option value="archived" data-subtext="soft delete" <%= @status == 'archived' ? 'selected' : '' %> >Archived</option>
     
         </select>
             
@@ -70,11 +72,15 @@
         </div>
     </div>
 
-    <div class="col-md-3 mb-3">
-        <% if current_user.type == 'ChiefEditor' %>
-            <%= link_to 'New Story', stories_new_path, class: 'py-4  w-100 btn btn-outline-primary float-right' %>
-        <% end %>
+    <div class="col-md-1 mb-3">
     </div>
+
+    <% if current_user.type == 'ChiefEditor' %>
+    <div class="col-md-3 mb-3">
+        
+            <%= link_to 'New Story', stories_new_path, class: 'py-4  w-100 btn btn-outline-primary float-right' %>
+    </div>
+    <% end %>
 
 </div>
 
@@ -151,7 +157,7 @@
                 <h3 class="mb-2">
 
                     
-                    <a class="text-dark" href="#">
+                    <a class="text-dark" href="<%=root_path + 'stories/' + story.id.to_s + '/edit' %>">
                         <% if story.headline.eql?('') %>
                             Untitled <%= story.id %>
                         <% else %>
@@ -247,7 +253,7 @@
             
                 <div class="text-center card-body d-inline flex-column">
             
-                    <div class="text-muted">No stories</div>
+                    <div class="text-muted"><%= t 'no-stories-to-show' %></div>
             
                 </div>
                   

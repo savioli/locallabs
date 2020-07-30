@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_043146) do
+ActiveRecord::Schema.define(version: 2020_07_29_214132) do
+
+  create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "comment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "story_id"
+    t.bigint "commentator_id"
+    t.index ["commentator_id"], name: "index_comments_on_commentator_id"
+  end
 
   create_table "organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
@@ -44,6 +53,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_043146) do
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
+  add_foreign_key "comments", "users", column: "commentator_id"
   add_foreign_key "stories", "users", column: "creator_id"
   add_foreign_key "stories", "users", column: "reviewer_id"
   add_foreign_key "stories", "users", column: "writer_id"

@@ -19,7 +19,6 @@
 a:hover, a:visited {
   background-color: transparent;
   text-decoration: none;
-  // color: ;
 }
 
 .blog-header {
@@ -96,6 +95,7 @@ h6 {
 .h-250 {
   height: 250px;
 }
+
 @media (min-width: 768px) {
   .h-md-250 {
     height: 250px;
@@ -116,6 +116,7 @@ h6 {
 /*
 * Blog name and description
 */
+
 .blog-title {
   margin-bottom: 0;
   font-size: 2rem;
@@ -143,6 +144,7 @@ h6 {
 /*
 * Blog posts
 */
+
 .blog-post {
   margin-bottom: 4rem;
 }
@@ -158,6 +160,7 @@ h6 {
 /*
 * Footer
 */
+
 .blog-footer {
   padding: 2.5rem 0;
   color: #999;
@@ -211,9 +214,6 @@ footer p {
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
 
-#username {
-  
-}
 #role {
   font-weight: bold;
 }
@@ -228,4 +228,13 @@ footer p {
 
 #body {
   min-height: 300px;
+}
+
+.commentator {
+  font-weight: bold;
+}
+
+.comment {
+  border: solid 1px #e8e8e8;
+  padding: 5px 5px 5px 10px;
 }

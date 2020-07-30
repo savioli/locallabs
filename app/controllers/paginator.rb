@@ -1,28 +1,8 @@
 class Paginator
-  # private_class_method :new
 
-  # @limit = nil
-  # @delta = nil
-  # @total_of_records = nil
-  # @page = nil
-  # @page = nil
-  # @min_page = nil
-  # @max_page = nil
-  # @max_pages = nil
-  # @previous_page = nil
-  # @next_page = nil
-  # @offset = nil
-
-  def self.call(*args)
-    new(*args).call
-  end
-
-  # def initialize()
-  # end
-
-  def initialize(total_of_records, page)
+  def initialize(total_of_records, page, limit)
     
-    @limit = 3
+    @limit = 7
     @delta = 4
     @total_of_records = total_of_records
     @page = page
@@ -43,41 +23,47 @@ class Paginator
 
     # Calculates the maximum page
     @max_pages = @total_of_records.to_f / @limit.to_f
-
     @max_pages = @max_pages.ceil
 
+    # Calculates the offset
     @offset = (@page - 1) * @limit
     
+    # Calculates the min page
     @min_page = @page - @delta
 
     if @min_page <= 0
       @min_page = 1
     end
 
+    # Calculates the max page
     @max_page = @page + @delta
 
     if @max_page > @max_pages
       @max_page = @max_pages
     end
 
+    # Calculates the previous
     @previous_page = @page - 1
 
     if @previous_page <= 0
       @previous_page = 1
     end
 
+    # Calculates the next
     @next_page = @page + 1
 
     if @next_page > @max_pages
       @next_page = @max_page
     end
 
+    # Calculates the number of records being shown
     if @page == @max_pages
       @showing = @total_of_records - (( @max_pages-1 )*@limit)
     else
       @showing = @limit      
     end
 
+    # Particular case
     if @max_pages == 0
       @max_pages = 1
       @next_page = 1
