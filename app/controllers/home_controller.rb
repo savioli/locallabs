@@ -62,17 +62,8 @@ class HomeController < ApplicationController
 
     if !my_stories.nil?
 
-      args = args.merge( { creator_id: current_user.id } )
-      
-      if current_user.is_chief_editor?
-        
-        my_stories_where = '( creator_id = :creator_id )'
-      
-      else
-        
-        my_stories_where = '( writer_id = :creator_id )'
-
-      end
+      args = args.merge( { current_user_id: current_user.id } )
+      my_stories_where = '( writer_id = :current_user_id )'
 
     end
 

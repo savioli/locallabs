@@ -16,7 +16,10 @@ services:
       - .:/var/www/ror_app
     depends_on: 
       - mysql
-       
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.3
+  
   nginx:
     build: 
       context: .
@@ -30,7 +33,10 @@ services:
       - "80:80"
     volumes:
       - public:/var/www/ror_app/public
-
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.1
+      
   mysql:
     image: mysql
     container_name: mysql
@@ -39,7 +45,17 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306"
-  
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.2
+      
 volumes: 
   public:
   .:
+
+networks:
+  static-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

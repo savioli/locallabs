@@ -1,0 +1,23 @@
+                      <div class="col-md-3 mb-3">                    
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'published', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+                      <%= hidden_field_tag :status, 'published', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-primary btn-lg btn-block" type="submit" form="published">Publish</button>
+
+                      <% end %>
+
+                      </div>
+
+                      <div class="col-md-3 mb-3">                    
+
+                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'archived', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+                      <%= hidden_field_tag :status, 'archived', id: 'status', class: 'form-control' %>
+
+                      <button class="btn btn-dark btn-lg btn-block" type="submit" form="archived">Archived</button>
+
+                      <% end %>
+
+                      </div>

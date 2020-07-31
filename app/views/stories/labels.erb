@@ -1,0 +1,50 @@
+
+<% if story.status == 'unassigned' %>
+
+    <div class="btn btn-sm unassigned">
+        Unassigned
+    </div>
+
+<% elsif story.status == 'draft' %>
+
+    <div class="btn btn-sm draft">
+        Draft
+    </div>
+
+<% elsif story.status == 'for_review' %>
+
+    <div class="btn btn-sm for-review">
+        For Review
+    </div>
+
+<% elsif story.status == 'in_review' %>
+
+    <div class="btn btn-sm in-review">
+        In Review
+    </div>
+
+<% elsif story.status == 'pending' %>
+
+    <div class="btn btn-sm pending">
+        Pending
+    </div>
+
+<% elsif story.status == 'approved' %>
+
+    <div class="btn btn-sm approved">
+        Approved
+    </div>
+
+<% elsif story.status == 'published' %>
+
+    <div class="btn btn-sm published">
+        Published
+    </div>
+
+<% elsif story.status == 'archived' %>
+
+    <div class="btn btn-sm archived">
+        Archived
+    </div>
+
+<% end %>

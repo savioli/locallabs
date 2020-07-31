@@ -1,0 +1,23 @@
+<div class="col-md-3 mb-3">                    
+
+    <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'approve', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+        <%= hidden_field_tag :status, 'approved', id: 'status', class: 'form-control' %>
+
+        <button class="btn btn-primary btn-lg btn-block" type="submit" form="approve">Approve</button>
+
+    <% end %>
+
+</div>
+
+<div class="col-md-3 mb-3">                    
+
+    <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'peding', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+
+        <%= hidden_field_tag :status, 'pending', id: 'status', class: 'form-control' %>
+
+        <button class="btn btn-warning btn-lg btn-block" type="submit" form="peding">Request Changes</button>
+
+    <% end %>
+
+</div>

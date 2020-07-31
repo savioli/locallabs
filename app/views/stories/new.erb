@@ -1,0 +1,133 @@
+
+  <div class="row">
+
+    <div class="col-md-6 mb-3">
+        
+        <%= link_to 'Home', root_url  %>
+        <span>/</span>
+
+        <span>New Story</span>
+
+    </div>
+
+    <div class="col-md-6 mb-3">
+
+        <div class="float-right d-block">
+
+            <div class="btn btn-sm btn-light">
+                Unassigned
+            </div>
+              
+        </div>
+
+    </div>
+
+  </div>
+
+  <%= render template: 'commons/messages.html.erb' %>
+
+  <div class="row mb-2">
+
+    <div class="col-md-12">
+    
+    <%= form_tag stories_create_path, class: 'needs-validation', autocomplete: 'off' do |form| %>
+
+
+            <div class="mb-3">
+              
+              <%= label_tag :slug, 'Headline', for: 'headline' %>
+              <%= text_field_tag :headline, '', id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
+
+              <div class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </div>
+
+            </div>
+
+            <div class="row">
+              
+              <div class="col-md-6 mb-3">
+                
+                <%= label_tag :writer_id, 'Writer', for: 'writer_id' %>
+
+                <select name="writer_id" id="writer_id" class="selectpicker form-control">
+                    
+                    <option value="" selected>Select a Writer</option>
+
+                    <% @writers.each do |writer| %>
+
+                        <option value="<%=writer.id%>"><%=writer.name%></option>
+
+                    <% end %>
+
+                </select>
+
+                <div class="invalid-feedback">
+                  Please select a valid country.
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                
+                <%= label_tag :reviewer_id, 'Reviewer', for: 'reviewer_id' %>
+
+                <select name="reviewer_id" id="reviewer_id" class="selectpicker form-control">
+                    
+                    <option value="" selected>Select a Reviewer</option>
+
+                    <% @writers.each do |writer| %>
+
+                        <option value="<%=writer.id%>"><%=writer.name%></option>
+
+                    <% end %>
+
+
+                </select>
+
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+
+            </div>
+
+            <div class="mb-3">
+            
+            <%= label_tag :body, 'Story', for: 'body' %>
+              
+              <!-- DISABLED -->
+              <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..."></textarea>
+              
+              <%#= hidden_field_tag :body %>
+
+              <div class="invalid-feedback">
+                Please enter your shipping address.
+              </div>
+            </div>
+
+            <div class="row">
+
+              <div class="col-md-8 mb-3">                
+              </div>
+
+              <%# <div class="col-md-2 mb-3">
+              </div> %>
+
+              <div class="col-md-2 mb-3">
+                <%# <button  type="submit">Cancel</button> %>
+                <%= link_to 'Cancel', root_url, class: 'btn btn-secondary btn-lg btn-block' %>
+              </div>
+
+              <div class="col-md-2 mb-3">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+              </div>
+              
+            </div>
+
+          <% end %>
+
+    </div>
+    
+  </div>
+  
+

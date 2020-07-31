@@ -24,6 +24,8 @@ RUN bundle install
 
 COPY . .
 
+# COPY yarn.lock yarn.lock
+
 RUN yarn install --check-files
 
 EXPOSE 3000

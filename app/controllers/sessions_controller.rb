@@ -82,4 +82,15 @@ class SessionsController < ApplicationController
 
   end
 
+  def user
+    
+    id = params[:id]
+    
+    session[:user_id] = id.to_i
+    session[:organization_id] = 1
+
+    redirect_to root_url and return
+
+  end
+
 end

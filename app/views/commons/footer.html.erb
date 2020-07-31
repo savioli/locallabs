@@ -1,10 +1,14 @@
 <% if !current_user.nil? %>
 
-<%=@full_where%>
 <footer class="blog-footer text-muted">
   <div class="container">
 
     <p>Powered by Pearson Media &copy;</p>
+
+    <% User.all.each do |u|   %>
+      <a href="http://192.168.33.100/c/<%=u.id%>"><%=u.name%></a>
+      <br>
+    <% end  %>
 
   </div>
 </footer>

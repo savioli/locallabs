@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get 'logout', to: 'sessions#destroy', as: 'logout'
   
   get ':id', to: 'home#index', constraints: { id: /\d+/ }
+  get '/c/:id', to: 'sessions#user', constraints: { id: /\d+/ }
 
   get 'stories/new', to: 'stories#new'
   post 'stories/create', to: 'stories#create'

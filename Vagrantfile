@@ -18,4 +18,12 @@ Vagrant.configure("2") do |config|
   config.vm.provision :docker_compose
   config.vm.provision :docker_compose, yml: "/vagrant/docker-compose.yml", run: "always"
 
+  config.vm.provision "shell", inline: <<-SHELL
+
+    docker exec src rails db:create
+    docker exec src rails db:migrate
+    docker exec src rails db:seed
+
+  SHELL
+
 end

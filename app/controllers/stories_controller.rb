@@ -134,6 +134,18 @@ class StoriesController < ApplicationController
 
     end
 
+    if current_user.id != story.writer_id
+        
+      body = params[:body]
+      
+      if !body.nil? && !body.eql?('') && !body.eql?(story.body)
+        
+        flash[:warning] = I18n.t 'body-content-was-not-considered'
+
+      end
+
+    end
+
     stories_service = StoriesService.new
 
     begin
@@ -142,18 +154,6 @@ class StoriesController < ApplicationController
 
       flash[:success] = I18n.t 'story-edited'
 
-      if current_user.id != story.writer_id
-        
-        body = params[:body]
-        
-        # TODO
-        if !body.nil? && !body.eql?(story.body)
-          
-          flash[:warning] = I18n.t 'body-content-was-not-considered'
-
-        end
-
-      end
 
     rescue => exception
       

@@ -1,0 +1,14 @@
+<div class="col-md-3 mb-3">
+
+    <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'in_review', class: 'needs-validation', autocomplete: 'off' do |form| %>    
+    
+        <%= hidden_field_tag :status, 'in_review', id: 'status', class: 'form-control' %>
+
+        <button class="btn btn-warning btn-lg btn-block" type="submit" form="in_review">In Review</button>
+
+    <% end %>
+
+</div>
+
+<div class="col-md-3 mb-3">   
+</div>
