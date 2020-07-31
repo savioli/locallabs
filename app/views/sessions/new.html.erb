@@ -2,17 +2,35 @@
   	
 	  <%= form_tag sessions_path, method: 'post', autocomplete: 'off', class: 'form-signin' do |form| %>
 
-		<img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+		<img class="mb-4" src="<%= root_url%>lorem-logo.png" alt="" width="120">
     
 		<%= render template: 'commons/messages.html.erb' %>
 
 		<%= text_field_tag :slug, '', id: 'slug', class: 'form-control', placeholder: 'Company ID', required: false %>
 
-		<%= email_field_tag :email,'', id: 'email', class: 'form-control', placeholder: 'Email', required: false %>
+		<% if !flash[:slug].nil? %>
+		<div class="text-left invalid-feedback d-block">
+          <%=flash[:slug] %>
+        </div>
+		<% end %>
+
+		<%= text_field_tag :email,'', id: 'email', class: 'form-control', placeholder: 'Email', required: false %>
+
+		<% if !flash[:email].nil? %>
+		<div class="text-left invalid-feedback d-block">
+          <%=flash[:email] %>
+        </div>
+		<% end %>
 
 		<%= password_field_tag :password,'', id: 'password', class: 'form-control', placeholder: 'Password', required: false %>
 
-		<%= submit_tag 'Login', class: 'btn btn-lg btn-primary btn-block' %>
+		<% if !flash[:password].nil? %>
+		<div class="text-left invalid-feedback d-block">
+          <%=flash[:password] %>
+        </div>
+		<% end %>
+
+		<%= submit_tag 'Login', id: 'login', class: 'btn btn-lg btn-primary btn-block' %>
 
     	<p class="mt-5 mb-3 text-muted">&copy; Pearson Media 2020</p>
 

@@ -11,64 +11,70 @@ class SessionsController < ApplicationController
 
   def create
 
-    # TODO: Better validation
+    # Simple Validation
+    email = params[:email].strip
+    slug = params[:slug].strip
+    password = params[:password].strip
 
-    email = params[:email]
+    valid_fields = true
 
-    slug = params[:slug]
+    if slug.length < 3
 
-    password = params[:password]
+      flash[:slug] = I18n.t 'invalid-slug-length'
 
-    if ( slug.length < 3 ) || ( password.length < 1 )
+      valid_fields = false
 
-      flash[:danger] = I18n.t 'invalid-fields'
+    end
+
+    if password.length < 1
+
+      flash[:password] = I18n.t 'invalid-password-length'
+
+      valid_fields = false
+
+    end
+    
+    email_validate = /(\A([a-z]*\s*)*\<*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\>*\Z)/i
+
+    if !email_validate.match(email)
+      
+      flash[:email] = I18n.t 'invalid-email'
+
+      valid_fields = false
+
+    end
+
+    if !valid_fields
 
       redirect_to login_path and return
-    
+
     end
 
-    user = User.where(email: params[:email]).first
+    auth_service = AuthService.new
 
-    if !user.nil?
+    begin
+      
+      user = auth_service.auth(params)
 
-      organization_slug = user.organization.slug
+      session[:user_id] = user.id
+      session[:organization_id] = user.organization_id
 
-      if params[:slug] == organization_slug
+      redirect_to root_url
 
-        if user&.authenticate(params[:password])
+    rescue => exception
 
-          session[:user_id] = user.id
-
-          redirect_to root_url
-
-        else
-
-          flash[:danger] = I18n.t 'incorrect-password'
-
-          redirect_to login_path
-
-        end
-
-      else
-
-        flash[:danger] = I18n.t 'incorrect-slug'
-
-        redirect_to login_path
-
-      end
-
-    else
-
-      flash[:danger] = I18n.t 'account-not-found'
+      flash[:danger] = I18n.t exception.message
 
       redirect_to login_path
-
+      
     end
+
   end
 
   def destroy
     
     session[:user_id] = nil
+    session[:organization_id] = nil
 
     flash[:danger] = I18n.t 'logout'
     

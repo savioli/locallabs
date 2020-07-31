@@ -226,7 +226,7 @@ footer p {
   float: right;
 }
 
-#body {
+#body, #disabled-body {
   min-height: 300px;
 }
 
@@ -237,4 +237,61 @@ footer p {
 .comment {
   border: solid 1px #e8e8e8;
   padding: 5px 5px 5px 10px;
+}
+
+// Status
+.unassigned {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+  font-weight: bold;
+}
+
+.draft {
+  background-color: #cccccc;
+  color: #000000;
+  border-color: #cccccc;
+  font-weight: bold;
+}
+
+.for-review {
+  background-color: #c9daf8;
+  color: #000000;
+  border-color: #c9daf8;
+  font-weight: bold;
+}
+
+.in-review {
+  background-color: #ffff00;
+  color: #000000;
+  border-color: #ffff00;
+  font-weight: bold;
+}
+
+.pending {
+  background-color: #f1c232;
+  color: #000000;
+  border-color: #f1c232;
+  font-weight: bold;
+}
+
+.approved {
+  background-color: #6d9eeb;
+  color: #000000;
+  border-color: #6d9eeb;
+  font-weight: bold;
+}
+
+.published {
+  background-color: #6aa84f;
+  color: #000000;
+  border-color: #6aa84f;
+  font-weight: bold;
+}
+
+.archived {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+  font-weight: bold;
 }

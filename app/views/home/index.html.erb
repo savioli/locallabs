@@ -106,50 +106,8 @@
 
                     <div class="float-right d-block">
 
-                      <% if story.status == 'unassigned' %>
-
-                        <div class="btn btn-sm btn-light">
-                            Unassigned
-
-                    <% elsif story.status == 'draft' %>
-
-                        <div class="btn btn-sm btn-secondary">
-                            Draft
-
-                    <% elsif story.status == 'for_review' %>
-
-                        <div class="btn btn-sm btn-primary">
-                            For Review
-
-                    <% elsif story.status == 'in_review' %>
-
-                        <div class="btn btn-sm btn-warning">
-                            In Review
-
-                    <% elsif story.status == 'pending' %>
-
-                        <div class="btn btn-sm btn-warning">
-                            Pending
-
-                    <% elsif story.status == 'approved' %>
-
-                        <div class="btn btn-sm btn-primary">
-                            Approved
-
-                    <% elsif story.status == 'published' %>
-
-                        <div class="btn btn-sm btn-success">
-                            Published
-
-                    <% elsif story.status == 'archived' %>
-
-                        <div class="btn btn-sm btn-dark">
-                            Archived
-
-                    <% end %>
+                      <%= render template: 'stories/labels.erb', locals: { story: story } %>
                 
-                        </div>
-              
                     </div>
             
                 </div>

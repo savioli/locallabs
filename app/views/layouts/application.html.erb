@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Src</title>
+
+    <% if current_user %>
+      <title><%=current_user.organization.name%></title>
+    <% else %>
+    <title>Pearson Media</title>
+    <% end %>
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 

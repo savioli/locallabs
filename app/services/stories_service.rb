@@ -97,7 +97,9 @@ class StoriesService < Service
 
     begin
 
-      story.save  
+      story.save
+
+      return story
 
     rescue => exception
 
@@ -136,7 +138,7 @@ class StoriesService < Service
 
     if deny_update
 
-      raise 'no-permission-to-change-story'
+      raise 'no-permission-to-change-story-at-this-time'
 
     end
 

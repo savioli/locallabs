@@ -1,5 +1,4 @@
-  
-  <div class="row">
+<div class="row">
 
     <div class="col-md-10 mb-3">
 
@@ -11,386 +10,243 @@
 
     </div>
 
-    <!-- -->
     <div class="col-md-2">
 
-    <div>
-            
-
-                    <div class="float-right d-block">
-
-                      <% if @story.status == 'unassigned' %>
-
-                        <div class="btn btn-sm btn-light">
-                            Unassigned
-
-                    <% elsif @story.status == 'draft' %>
-
-                        <div class="btn btn-sm btn-secondary">
-                            Draft
-
-                    <% elsif @story.status == 'for_review' %>
-
-                        <div class="btn btn-sm btn-primary">
-                            For Review
-
-                    <% elsif @story.status == 'in_review' %>
-
-                        <div class="btn btn-sm btn-warning">
-                            In Review
-
-                    <% elsif @story.status == 'pending' %>
-
-                        <div class="btn btn-sm btn-warning">
-                            Pending
-
-                    <% elsif @story.status == 'approved' %>
-
-                        <div class="btn btn-sm btn-secondary">
-                            Approved
-
-                    <% elsif @story.status == 'published' %>
-
-                        <div class="btn btn-sm btn-success">
-                            Published
-
-                    <% elsif @story.status == 'archived' %>
-
-                        <div class="btn btn-sm btn-dark">
-                            Archived
-
-                    <% end %>
-                
-                        </div>
-              
-                    </div>
-            
-                </div>
+        <div class="float-right d-block">
+                        
+            <%= render template: 'stories/labels.erb', locals: { story: @story } %>
+                        
+        </div>
 
     </div>
 
-  </div>
+</div>
 
-  <%= render template: 'commons/messages.html.erb' %>
+<%= render template: 'commons/messages.html.erb' %>
 
-  <div class="row mb-2">
+<%= form_tag root_url + 'stories/' + @story.id.to_s + '/update', id: 'edit', class: 'needs-validation', autocomplete: 'off' do |form| %>
 
-    <div class="col-md-12">
-    
-    <%= form_tag root_url + 'stories/' + @story.id.to_s + '/update', id: 'edit', class: 'needs-validation', autocomplete: 'off' do |form| %>
-        <button class="btn btn-warning btn-lg btn-block" type="submit">N</button>
-            <div class="mb-3">
-              
-              <%= label_tag :slug, 'Headline', for: 'headline' %>
+    <div class="row mb-2">
 
-              <% if ( @story.status.eql?('for_review') || @story.status.eql?('in_review')  || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') ) || (  @story.status.eql?('pending') && current_user.id != @story.writer.id ) || (!current_user.is_chief_editor?) %>
+        <div class="col-md-12">
                 
-                <!-- DISABLED -->
-                <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
-              <% else %>
-                <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
-              <% end %>
-              
-              <div class="invalid-feedback">
+            <button class="btn btn-warning btn-lg btn-block" type="submit">N</button>
+                
+            <div class="mb-3">
+                    
+                <%= label_tag :slug, 'Headline', for: 'headline' %>
+
+                <% if (current_user.id == @story.reviewer_id) || ( @story.status.eql?('for_review') || @story.status.eql?('in_review')  || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') ) %>
+                
+                    <%= text_field_tag :disabled_headline,  @story.headline, id: 'disabled-headline', class: 'form-control', placeholder: 'Write a headline...', required: false, disabled: true %>
+                    <%= hidden_field_tag :headline,  @story.headline, id: 'headline' %>
+                
+                <% else %>
+
+                    <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
+                
+                <% end %>
+                
+                <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
-              </div>
+                </div>
 
             </div>
+        </div>
+    </div>
 
-            <div class="row">
-              
-              <div class="col-md-6 mb-3">
+    <div class="row">
+                    
+        <div class="col-md-6 mb-3">
 
-              <%= label_tag :writer_id, 'Writer', for: 'writer_id' %>
+            <%= label_tag :writer_id, 'Writer', for: 'writer_id' %>
 
-              <% if current_user.is_chief_editor? && ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') ) %>
+            <% if current_user.is_chief_editor? && ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') ) %>
                 
                 <select name="writer_id" id="writer_id" class="selectpicker form-control">
+                            
                     <option value="">Select a Writer</option>                    
+                            
                     <% @writers.each do |writer| %>
 
                         <% if ( !@writer.nil? ) && ( @writer.id == writer.id )  %>
-                        
-                        <option value="<%=writer.id%>" selected><%=writer.name%></option>
-                        
+                            
+                            <option value="<%=writer.id%>" selected><%=writer.name%></option>
+                            
                         <% else %>
-                        
-                        <option value="<%=writer.id%>"><%=writer.name%></option>
-                        
+                            
+                            <option value="<%=writer.id%>"><%=writer.name%></option>
+                            
                         <% end %>
 
                     <% end %>
 
                 </select>
 
-              <% else %>
-              
-              <!-- DISABLED -->
-              <%= text_field_tag :hidden_writer_id,  @writer.name, id: 'writer_id', class: 'form-control' %>
-              <%= hidden_field_tag :writer_id,  @story.writer_id, id: 'hidden_writer_id', class: 'form-control' %>
-
-              <% end %>
-
-                <div class="invalid-feedback">
-                  Please select a valid country.
-                </div>
-
-              </div>
-
-              <div class="col-md-6 mb-3">
+            <% else %>
                 
-                <%= label_tag :reviewer_id, 'Reviewer', for: 'reviewer_id' %>
-                
-                <% if current_user.is_chief_editor? && ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') ) %>
+                <%= text_field_tag :disabled_writer_id,  @writer.name, id: 'disabled-writer-id', class: 'form-control', disabled: true %>
+                <%= hidden_field_tag :writer_id,  @story.writer_id, id: 'writer_id', class: 'form-control' %>
+
+            <% end %>
+
+            <div class="invalid-feedback">
+                Please select a valid country.
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+                    
+            <%= label_tag :reviewer_id, 'Reviewer', for: 'reviewer_id' %>
+                    
+            <% if current_user.is_chief_editor? && ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') ) %>
 
                 <select name="reviewer_id" id="reviewer_id" class="selectpicker form-control">
-                    
+                        
                     <option value="">Select a Reviewer</option>
 
                     <% @writers.each do |writer| %>
 
                         <% if ( !@reviewer.nil? ) && ( @reviewer.id == writer.id )  %>
-                        
-                        <option value="<%=writer.id%>" selected><%=writer.name%></option>
-                        
+                                    
+                            <option value="<%=writer.id%>" selected><%=writer.name%></option>
+                                    
                         <% else %>
-                        
-                        <option value="<%=writer.id%>"><%=writer.name%></option>
-                        
+                                    
+                            <option value="<%=writer.id%>"><%=writer.name%></option>
+                                
                         <% end %>
 
                     <% end %>
 
-
                 </select>
 
-                <% else %>
+            <% else %>
 
-                <!-- DISABLED -->
-                <%= text_field_tag :hidden_reviewer_id,  @reviewer.name, id: 'reviewer_id', class: 'form-control' %>
-                
-                <%= hidden_field_tag :reviewer_id,  @story.reviewer_id, id: 'hidden_reviewer_id', class: 'form-control' %>
-
-                <% end %>
-
-                <div class="invalid-feedback">
-                  Please provide a valid state.
-                </div>
-              </div>
-
-            </div>
-
-            <div class="mb-3">
-              <%= label_tag :body, 'Story', for: 'body' %>
-
-              <% if ( current_user.id == @story.writer_id ) && !@story.status.eql?('for_review') && !@story.status.eql?('approved')  && !@story.status.eql?('published')  && !@story.status.eql?('archived')   %>
-              
-              <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..." ><%=@story.body%></textarea>
-              
-              <% else %>
-              
-              <!-- DISABLED -->
-              <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..."><%=@story.body%></textarea>
-
-              <% end %>
-
-              <div class="invalid-feedback">
-                Please enter your shipping address.
-              </div>
-            </div>
+                <%= text_field_tag :disabled_reviewer_id,  @reviewer.name, id: 'disabled-reviewer-id', class: 'form-control', disabled: true %>
+                <%= hidden_field_tag :reviewer_id,  @story.reviewer_id, id: 'reviewer_id', class: 'form-control' %>
 
             <% end %>
 
-            <div class="row">
+            <div class="invalid-feedback">
+                Please provide a valid state.
+            </div>
+                        
+        </div>
 
-                  <% if @story.status == 'draft' %>
+    </div>
 
-                    <% if current_user.type == 'Writer' && @story.writer_id == current_user.id %>
-
-                      <div class="col-md-3 mb-3">
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'for_review', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-                      
-                      <%= hidden_field_tag :status, 'for_review', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-warning btn-lg btn-block" type="submit" form="for_review">Request Review</button>
-
-                      </div>
-
-                      <% end %>
-
-                      <div class="col-md-3 mb-3">
-                      </div>
-
-                    <% else %>
+    <div class="mb-3">
                     
-                      <div class="col-md-6 mb-3">
-                      </div>
+        <%= label_tag :body, 'Story', for: 'body' %>
 
-                    <% end %>
-
-                  <% elsif @story.status == 'for_review' %>
-
-                    <% if current_user.type == 'Writer' && @story.reviewer_id == current_user.id %>
+        <% if (current_user.id == @story.reviewer_id) || @story.status.eql?('for_review') || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') %>
                     
+            <textarea id="disabled-body" name="disabled_body" class="form-control" aria-label="With textarea" placeholder="Write a story..." disabled><%=@story.body%></textarea>
+            <%= hidden_field_tag :body,  @story.reviewer_id, id: 'body', class: 'form-control' %>
 
-                      <div class="col-md-3 mb-3">
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'in_review', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-                      
-                      <%= hidden_field_tag :status, 'in_review', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-warning btn-lg btn-block" type="submit" form="in_review">In Review</button>
-
-                      <% end %>
-
-                      </div>
-
-                      <div class="col-md-3 mb-3">
-                      </div>
-
-                    <% else %>
+        <% else %>
                     
-                      <div class="col-md-6 mb-3">
-                      </div>
-
-                    <% end %>
-                  
-                  <% elsif @story.status == 'in_review' %>
-
-                    <% if current_user.type == 'Writer' && @story.reviewer_id == current_user.id %>
-
-                      <div class="col-md-3 mb-3">                    
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'approve', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-
-                      <%= hidden_field_tag :status, 'approved', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-primary btn-lg btn-block" type="submit" form="approve">Approve</button>
-
-                      <% end %>
-
-                      </div>
-
-                      <div class="col-md-3 mb-3">                    
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'peding', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-
-                      <%= hidden_field_tag :status, 'pending', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-warning btn-lg btn-block" type="submit" form="peding">Request Changes</button>
-
-                      <% end %>
-
-                      </div>
-                    
-                    <% else %>
-                    
-                      <div class="col-md-6 mb-3">
-                      </div>
-
-                    <% end %>
-
-                  <% elsif @story.status == 'approved' %>
-
-                    <% if current_user.type == 'ChiefEditor' %>
-
-                      <div class="col-md-3 mb-3">                    
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'published', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-
-                      <%= hidden_field_tag :status, 'published', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-primary btn-lg btn-block" type="submit" form="published">Publish</button>
-
-                      <% end %>
-
-                      </div>
-
-                      <div class="col-md-3 mb-3">                    
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'archived', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-
-                      <%= hidden_field_tag :status, 'archived', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-dark btn-lg btn-block" type="submit" form="archived">Archived</button>
-
-                      <% end %>
-
-                      </div>
-
-                    <% else %>
-                    
-                      <div class="col-md-6 mb-3">
-                      </div>
-
-                    <% end %>
-
-                  <% elsif @story.status == 'published' %>
-
-                      <% if current_user.is_chief_editor? %>
-
-                      <div class="col-md-3 mb-3">
-
-                      <%= form_tag root_url + 'stories/' + @story.id.to_s + '/status', id: 'archived', class: 'needs-validation', autocomplete: 'off' do |form| %>    
-                      
-                      <%= hidden_field_tag :status, 'archived', id: 'status', class: 'form-control' %>
-
-                      <button class="btn btn-dark btn-lg btn-block" type="submit" form="archived">Archive</button>
-
-                      </div>
-
-                      <% end %>
-
-                      <div class="col-md-3 mb-3">
-                      </div>
-
-                    <% else %>
-                    
-                      <div class="col-md-6 mb-3">
-                      </div>
-
-                    <% end %>
+            <!-- DISABLED -->
+            <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..."><%=@story.body%></textarea>
 
 
-                  <% else %>
-                    
-                    <div class="col-md-6 mb-3">
-                    </div>
+        <% end %>
+
+        <div class="invalid-feedback">
+            Please enter your shipping address.
+        </div>
+
+    </div>
+
+<% end %>
     
-                  <% end %>
 
-              <% if ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') )  %>
-              
-              <% if ( current_user.is_writer? && current_user.id == @writer.id && ( !@story.status.eql?('for_review') && !@story.status.eql?('in_review')  ) ) ||
-              ( current_user.is_chief_editor? ) %>
-              <div class="col-md-2 mb-3">
-              </div>
+<div class="row">
 
-              <div class="col-md-2 mb-3">
-                <button class="btn btn-secondary btn-lg btn-block" type="submit">Cancel</button>
-              </div>
+    <% if @story.status == 'draft' %>
 
-              <div class="col-md-2 mb-3">
-                <button class="btn btn-primary btn-lg btn-block" type="submit" form="edit">Save</button>
-              </div>
+        <% if @story.writer_id == current_user.id %>
 
-              
-              <% end %>
-              <% end %>
-              
+            <%= render template: 'stories/draft_controls.erb' %>
+
+        <% else %>
+            
+            <div class="col-md-6 mb-3">
             </div>
 
+        <% end %>
+
+    <% elsif @story.status == 'for_review' %>
+        
+        <% if @story.reviewer_id == current_user.id %>
             
-          
-    </div>
-    
-  </div>
-  
+            <%= render template: 'stories/for_review_controls.erb' %>
 
-  <!-- -->
-  
-  <%= render template: 'comments/comments.html.erb' %>
-  
+        <% else %>
+            
+            <div class="col-md-6 mb-3">
+            </div>
 
+        <% end %>
+            
+    <% elsif @story.status == 'in_review' %>
 
+        <% if @story.reviewer_id == current_user.id %>
+                
+            <%= render template: 'stories/in_review_controls.erb' %>
+            
+        <% else %>
+            
+        <div class="col-md-6 mb-3">
+        </div>
+
+        <% end %>
+
+    <% elsif @story.status == 'approved' %>
+
+        <% if current_user.is_chief_editor? %>
+
+            <%= render template: 'stories/approved_controls.erb' %>
+
+        <% else %>
+            
+            <div class="col-md-6 mb-3">
+            </div>
+
+        <% end %>
+
+    <% elsif @story.status == 'published' %>
+
+        <% if current_user.is_chief_editor? %>
+                
+            <%= render template: 'stories/published_controls.erb' %>
+
+        <% else %>
+            
+            <div class="col-md-6 mb-3">
+            </div>
+
+        <% end %>
+
+    <% else %>
+            
+        <div class="col-md-6 mb-3">
+        </div>
+
+    <% end %>
+
+    <% if ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') )  %>
+        
+        <% if current_user.is_chief_editor? || (current_user.id == @writer.id) %>
+
+            <%= render template: 'stories/main_controls.erb' %>
+
+        <% end %>
+
+    <% end %>
+            
+</div>
+
+<%= render template: 'comments/comments.html.erb' %>

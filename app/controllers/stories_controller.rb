@@ -23,7 +23,7 @@ class StoriesController < ApplicationController
 
     begin
 
-      stories_service.create_story(current_user, params)
+      story = stories_service.create_story(current_user, params)
 
       body = params[:body]
 
@@ -146,6 +146,7 @@ class StoriesController < ApplicationController
         
         body = params[:body]
         
+        # TODO
         if !body.nil? && !body.eql?(story.body)
           
           flash[:warning] = I18n.t 'body-content-was-not-considered'
@@ -213,7 +214,7 @@ class StoriesController < ApplicationController
       redirect_to request.referrer and return
 
     end
-
+    
     begin
 
       story = Story.find(story_id)
