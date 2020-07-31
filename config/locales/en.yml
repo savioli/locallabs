@@ -42,8 +42,8 @@ en:
   no-permission-to-change-status: "You don't have permission to change the status of this story."
   no-permission-to-change-body: "You don't have permission to change the body of this story."
   no-permission-to-access-story: "You don't have permission to access the content of this story."
-  no-permission-to-change-story: "The story cannot be changed."
-  no-permission-to-change-story: "The story cannot be changed."
+  no-permission-to-change-story: "You don't have permission to change the story"
+  # no-permission-to-change-story: "The story cannot be changed."
   no-permission-to-change-story-in-review: the story cannot be changed while it is being reviewed
   no-permission-to-post-comments: "You don't have permission to post comments in this story."
   writer-and-reviewer-connot-be-the-same: "The Writer and the Reviewer cannot be the same."
@@ -56,7 +56,7 @@ en:
   story-created: "The Story has been created."
   story-not-created: "The Story could not be created."
   story-edited: "The Story edited."
-
+  body-content-was-not-considered: "Content of the body was not considered because you are not the writer assigned to this story."
   no-stories-to-show: "No stories to show."
   invalid-change-of-status: "Invalid change of status."
   invalid-status: "Invalid status."
@@ -67,6 +67,8 @@ en:
   invalid-fields: "Please enter the fields correctly."
   page-does-not-exist: "Page doesn't exists."
 
-  empty-comment-ignored: "The empty comment was not considered"
+  empty-comment-not-considered: "The empty comment was not considered"
+
+  error-while-changing-status: "an error occurred while changing the status"
   comment-not-added: "There was an error adding your comment"
   comment-added: "Comment added successfully."

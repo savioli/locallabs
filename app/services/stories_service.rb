@@ -1,11 +1,6 @@
 class StoriesService < Service
 
-  # def initialize(first_variable, second_variable)
-  #   self.first_variable = first_variable
-  #   self.second_variable = second_variable
-  # end
-
-  def change_status(user, story, new_status)
+  def change_story_status(user, story, new_status)
 
     all_status = [ 'unassigned', 
                    'draft', 
@@ -18,7 +13,7 @@ class StoriesService < Service
 
     status = new_status
 
-    if status.nil? || status.eql?('') || !all_status.include?(status)
+    if !all_status.include?(status)
       
       raise 'invalid-status'
 
@@ -26,7 +21,6 @@ class StoriesService < Service
     
     if story.status == 'unassigned'
 
-      # draft
       if status == 'draft'
 
         if user.is_writer?
@@ -45,7 +39,8 @@ class StoriesService < Service
 
       if status == 'for_review'
       
-        # Constraint 6.1
+        # Constraint 6
+        # A ​writer ​can only set the status to FOR REVIEW
         if user.id != story.writer_id
 
           raise 'no-permission-to-change-status'
@@ -60,10 +55,13 @@ class StoriesService < Service
 
     elsif story.status == 'for_review'
 
-      # in_review
+      # Constraint 7
+      # A ​ Reviewer can only set the status to 
+      # IN REVIEW (start review), 
+      # PENDING (request changes) and 
+      # APPROVED (approve story);
       if status == 'in_review'
 
-        # Constraint 7.1
         if user.id != story.reviewer_id
 
           raise 'no-permission-to-change-status'
@@ -78,20 +76,22 @@ class StoriesService < Service
 
     elsif story.status == 'in_review'
 
-      # pending
+      # Constraint 7
+      # A ​ Reviewer can only set the status to 
+      # IN REVIEW (start review), 
+      # PENDING (request changes) and 
+      # APPROVED (approve story);        
+
       if status == 'pending'
 
-        # Constraint 7.1
         if user.id != story.reviewer_id
 
           raise 'no-permission-to-change-status'
 
         end
 
-      # approved
       elsif status == 'approved'
 
-        # Constraint 7.1
         if user.id != story.reviewer_id
 
           raise 'no-permission-to-change-status'
@@ -110,7 +110,6 @@ class StoriesService < Service
 
     elsif story.status == 'approved'
 
-      # published
       if status == 'published'
 
         if !user.is_chief_editor?
@@ -119,7 +118,6 @@ class StoriesService < Service
 
         end
 
-      # archived
       elsif status == 'archived'
 
         if !user.is_chief_editor?
@@ -136,7 +134,6 @@ class StoriesService < Service
 
     elsif story.status == 'published'
 
-      # archived
       if status == 'archived'
 
         if !user.is_chief_editor?
@@ -164,11 +161,10 @@ class StoriesService < Service
   
     rescue => exception
       
+      raise 'error-while-changing-status'
+
     end
 
   end
-  
-  # private
-  
-  # attr_accessor :first_variable, :second_variable
+
 end

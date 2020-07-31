@@ -203,7 +203,7 @@ class HomeController < ApplicationController
     @stories = where.limit(pagination.limit).offset(pagination.offset)
 
     # Get all writers
-    @writers = Writer.all
+    @writers = User.all
     
     # Keep filtering parameters in the URL
     uri = URI.parse(request.original_url)

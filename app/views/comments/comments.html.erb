@@ -14,9 +14,10 @@
 
 </div>
 
-<% if !@story.status.eql?('approved') && !@story.status.eql?('published') && !@story.status.eql?('archived') %>
+<%# if !@story.status.eql?('approved') && !@story.status.eql?('published') && !@story.status.eql?('archived') %>
 
-    <% if @story.body.nil? || @story.body.eql?('') || @story.status.eql?('for_review') || @story.status.eql?('in_review') %>
+    <%# if @story.body.nil? || @story.body.eql?('') || @story.status.eql?('for_review') || @story.status.eql?('in_review') %>
+    
     <div class="row">
         <div class="col-md-12 mb-3">
 
@@ -45,5 +46,5 @@
         </div>
     </div>
 
-    <% end %>
-<% end %>
+    <%# end %>
+<%# end %>

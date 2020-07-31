@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
   name: MyString
   email: MyString
   password_digest: <%= BCrypt::Password.create('secret') %>
@@ -8,6 +9,7 @@ one:
   organization: one
 
 two:
+  id: 2
   name: MyString
   email: MyString
   password_digest: <%= BCrypt::Password.create('secret') %>

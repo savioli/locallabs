@@ -133,7 +133,7 @@
 
                     <% elsif story.status == 'approved' %>
 
-                        <div class="btn btn-sm btn-secondary">
+                        <div class="btn btn-sm btn-primary">
                             Approved
 
                     <% elsif story.status == 'published' %>
@@ -155,7 +155,6 @@
                 </div>
 
                 <h3 class="mb-2">
-
                     
                     <a class="text-dark" href="<%=root_path + 'stories/' + story.id.to_s + '/edit' %>">
                         <% if story.headline.eql?('') %>

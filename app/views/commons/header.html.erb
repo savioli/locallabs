@@ -33,6 +33,37 @@
 
             </div>
 
+            <%
+=begin%>
+ <div id="user-name" class="py-2">
+
+                <%= current_user.name %>
+
+            </div> 
+<%
+=end%>
+
+            <%
+=begin%>
+ <div class="clear"></div> 
+<%
+=end%>
+
+
+            <%
+=begin%>
+ <div id="user-role" class="">
+                
+                    <% if current_user.type == 'ChiefEditor' %>
+                    Chief Editor
+                    <% elsif current_user.type == 'Writer' %>
+                    Writer
+                    <% end %>
+
+            </div> 
+<%
+=end%>
+        
         </div>
     </div>
 </header>

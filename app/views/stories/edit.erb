@@ -67,27 +67,26 @@
             
                 </div>
 
-  </div>
-    <!-- -->
+    </div>
 
   </div>
 
   <%= render template: 'commons/messages.html.erb' %>
-
-
 
   <div class="row mb-2">
 
     <div class="col-md-12">
     
     <%= form_tag root_url + 'stories/' + @story.id.to_s + '/update', id: 'edit', class: 'needs-validation', autocomplete: 'off' do |form| %>
-
+        <button class="btn btn-warning btn-lg btn-block" type="submit">N</button>
             <div class="mb-3">
               
               <%= label_tag :slug, 'Headline', for: 'headline' %>
 
-              <% if ( @story.status.eql?('for_review') || @story.status.eql?('in_review')  || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') ) || (  @story.status.eql?('pending') && !current_user.is_chief_editor? && current_user.id != @story.writer.id ) %>
-                <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false, disabled: true %>
+              <% if ( @story.status.eql?('for_review') || @story.status.eql?('in_review')  || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') ) || (  @story.status.eql?('pending') && current_user.id != @story.writer.id ) || (!current_user.is_chief_editor?) %>
+                
+                <!-- DISABLED -->
+                <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
               <% else %>
                 <%= text_field_tag :headline,  @story.headline, id: 'headline', class: 'form-control', placeholder: 'Write a headline...', required: false %>
               <% end %>
@@ -125,10 +124,9 @@
                 </select>
 
               <% else %>
-
-            
-
-              <%= text_field_tag :hidden_writer_id,  @writer.name, id: 'writer_id', class: 'form-control', disabled: true %>
+              
+              <!-- DISABLED -->
+              <%= text_field_tag :hidden_writer_id,  @writer.name, id: 'writer_id', class: 'form-control' %>
               <%= hidden_field_tag :writer_id,  @story.writer_id, id: 'hidden_writer_id', class: 'form-control' %>
 
               <% end %>
@@ -168,7 +166,8 @@
 
                 <% else %>
 
-                <%= text_field_tag :hidden_reviewer_id,  @reviewer.name, id: 'reviewer_id', class: 'form-control', disabled: true %>
+                <!-- DISABLED -->
+                <%= text_field_tag :hidden_reviewer_id,  @reviewer.name, id: 'reviewer_id', class: 'form-control' %>
                 
                 <%= hidden_field_tag :reviewer_id,  @story.reviewer_id, id: 'hidden_reviewer_id', class: 'form-control' %>
 
@@ -184,13 +183,14 @@
             <div class="mb-3">
               <%= label_tag :body, 'Story', for: 'body' %>
 
-              <% if current_user.is_writer? && ( current_user.id == @story.writer_id ) && !@story.status.eql?('for_review') && !@story.status.eql?('approved')  && !@story.status.eql?('published')  && !@story.status.eql?('archived')   %>
+              <% if ( current_user.id == @story.writer_id ) && !@story.status.eql?('for_review') && !@story.status.eql?('approved')  && !@story.status.eql?('published')  && !@story.status.eql?('archived')   %>
               
               <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..." ><%=@story.body%></textarea>
               
               <% else %>
               
-              <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..." disabled><%=@story.body%></textarea>
+              <!-- DISABLED -->
+              <textarea id="body" name="body" class="form-control" aria-label="With textarea" placeholder="Write a story..."><%=@story.body%></textarea>
 
               <% end %>
 
@@ -259,7 +259,6 @@
                   <% elsif @story.status == 'in_review' %>
 
                     <% if current_user.type == 'Writer' && @story.reviewer_id == current_user.id %>
-
 
                       <div class="col-md-3 mb-3">                    
 
