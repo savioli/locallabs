@@ -61,3 +61,40 @@ After that, the **App** will be available through **NGINX** at [http://172.20.12
 OR
 
 And directly through the **PUMA** at [http://172.20.128.3:3000](http://172.20.128.1:3000)
+
+
+## Predefined Users
+
+
+**Organization**  
+
+**name:** New York News  
+**nyn:** nyn  
+
+**Chief Editor:**
+
+**name:** Jessica Pearson  
+**email:** jessica.pearson@nyn.com  
+**password:** jessica.pearson
+
+**Writers:**
+
+**name:** Mike Ross  
+**email:** mike.ross@nyn.com  
+**password:** mike.ross  
+
+**name:** Louis Litt  
+**email:** louis.litt@nyn.com  
+**password:** louis.litt
+
+**name:** Harvey Specter  
+**email:** harvey.specter@nyn.com  
+**password:** harvey.specter  
+
+**name:** Katrina Bennett  
+**email:** katrina.bennett@nyn.com  
+**password:** katrina.bennett
+
+**name:** Rachel Zane  
+**email:** rachel.zane@nyn.com  
+**password:** rachel.zane  

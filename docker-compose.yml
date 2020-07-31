@@ -54,6 +54,8 @@ volumes:
   .:
 
 networks:
+  default:
+    driver: bridge
   static-network:
     ipam:
       driver: default
