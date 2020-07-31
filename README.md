@@ -69,7 +69,7 @@ And directly through the **PUMA** at [http://172.20.128.3:3000](http://172.20.12
 **Organization**  
 
 **name:** New York News  
-**nyn:** nyn  
+**slug:** nyn  
 
 **Chief Editor:**
 

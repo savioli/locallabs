@@ -14,6 +14,8 @@ ENV RAILS_ROOT /var/www/ror_app
 
 WORKDIR $RAILS_ROOT
 
+RUN mkdir tmp/pids
+
 COPY Gemfile Gemfile
 
 # COPY Gemfile.lock Gemfile.lock
