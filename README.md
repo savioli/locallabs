@@ -56,11 +56,11 @@ docker exec src rails db:migrate
 docker exec src rails db:seed
 ```
 
-After that, the **App** will be available through **NGINX** at [http://172.20.128.1:80](http://192.168.33.100:80)
+After that, the **App** will be available through **NGINX** at [http://172.20.128.1:80](http://172.20.128.1:80)
 
 OR
 
-And directly through the **PUMA** at [http://172.20.128.3:3000](http://172.20.128.1:3000)
+And directly through the **PUMA** at [http://172.20.128.3:3000](http://172.20.128.3:3000)
 
 
 ## Predefined Users
