@@ -22,7 +22,7 @@ class StoriesService < Service
     # A story cannot have the same user as both ​ Writer ​and ​ Reviewer
     if valid_writer_id && ( writer_id == reviewer_id )
 
-      raise 'writer-and-reviewer-connot-be-the-same'
+      raise 'writer-and-reviewer-cannot-be-the-same'
     
     end
 
@@ -126,7 +126,7 @@ class StoriesService < Service
     # A story cannot have the same user as both ​ Writer ​ and ​ Reviewer
     if valid_writer_id && writer_id == reviewer_id 
 
-      raise 'writer-and-reviewer-connot-be-the-same'
+      raise 'writer-and-reviewer-cannot-be-the-same'
 
     end
 

@@ -20,6 +20,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
 
+    sleep 30
+
     docker exec src rails db:create
     docker exec src rails db:migrate
     docker exec src rails db:seed

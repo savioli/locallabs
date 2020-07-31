@@ -63,7 +63,8 @@ class HomeController < ApplicationController
     if !my_stories.nil?
 
       args = args.merge( { current_user_id: current_user.id } )
-      my_stories_where = '( writer_id = :current_user_id )'
+      # my_stories_where = '( writer_id = :current_user_id )'
+      my_stories_where = '( ( writer_id = :current_user_id ) OR ( reviewer_id = :current_user_id ) )'
 
     end
 

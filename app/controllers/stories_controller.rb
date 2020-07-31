@@ -197,6 +197,32 @@ class StoriesController < ApplicationController
 
     end
 
+    if new_status.eql?('for_review')
+    
+      flash[:success] = I18n.t 'review-requested'
+    
+    elsif new_status.eql?('in_review')
+
+      flash[:success] = I18n.t 'in-review'
+
+    elsif new_status.eql?('pending')
+
+      flash[:success] = I18n.t 'requested-changes'
+  
+    elsif new_status.eql?('approved')
+
+      flash[:success] = I18n.t 'story-approved'
+
+    elsif new_status.eql?('published')
+
+      flash[:success] = I18n.t 'story-published'
+
+    elsif new_status.eql?('archived')
+
+      flash[:success] = I18n.t 'story-archived'
+
+    end
+
     redirect_to request.referrer and return
 
   end

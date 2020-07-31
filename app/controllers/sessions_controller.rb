@@ -12,8 +12,8 @@ class SessionsController < ApplicationController
   def create
 
     # Simple Validation
-    email = params[:email].strip
-    slug = params[:slug].strip
+    email = params[:email].downcase.strip
+    slug = params[:slug].downcase.strip
     password = params[:password].strip
 
     valid_fields = true
@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
 
     end
 
-    if password.length < 1
+    if password.length < 6
 
       flash[:password] = I18n.t 'invalid-password-length'
 
@@ -45,6 +45,8 @@ class SessionsController < ApplicationController
     end
 
     if !valid_fields
+
+      flash[:danger] = I18n.t 'invalid-fields'
 
       redirect_to login_path and return
 
@@ -79,17 +81,6 @@ class SessionsController < ApplicationController
     flash[:danger] = I18n.t 'logout'
     
     redirect_to login_path
-
-  end
-
-  def user
-    
-    id = params[:id]
-    
-    session[:user_id] = id.to_i
-    session[:organization_id] = 1
-
-    redirect_to root_url and return
 
   end
 

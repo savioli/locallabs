@@ -30,13 +30,11 @@
 
         <div class="col-md-12">
                 
-            <button class="btn btn-warning btn-lg btn-block" type="submit">N</button>
-                
             <div class="mb-3">
                     
                 <%= label_tag :slug, 'Headline', for: 'headline' %>
 
-                <% if (current_user.id == @story.reviewer_id) || ( @story.status.eql?('for_review') || @story.status.eql?('in_review')  || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') ) %>
+                <% if (current_user.id == @story.reviewer_id && !current_user.is_chief_editor?) || ( @story.status.eql?('for_review') || @story.status.eql?('in_review')  || @story.status.eql?('approved') || @story.status.eql?('published') || @story.status.eql?('archived') ) %>
                 
                     <%= text_field_tag :disabled_headline,  @story.headline, id: 'disabled-headline', class: 'form-control', placeholder: 'Write a headline...', required: false, disabled: true %>
                     <%= hidden_field_tag :headline,  @story.headline, id: 'headline' %>
@@ -48,7 +46,6 @@
                 <% end %>
                 
                 <div class="invalid-feedback">
-                Please enter a valid email address for shipping updates.
                 </div>
 
             </div>
@@ -91,7 +88,6 @@
             <% end %>
 
             <div class="invalid-feedback">
-                Please select a valid country.
             </div>
 
         </div>
@@ -130,7 +126,6 @@
             <% end %>
 
             <div class="invalid-feedback">
-                Please provide a valid state.
             </div>
                         
         </div>
@@ -155,7 +150,6 @@
         <% end %>
 
         <div class="invalid-feedback">
-            Please enter your shipping address.
         </div>
 
     </div>
@@ -237,7 +231,7 @@
 
     <% end %>
 
-    <% if ( !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published') )  %>
+    <% if !@story.status.eql?('in_review') && !@story.status.eql?('for_review') && !@story.status.eql?('approved') && !@story.status.eql?('archived') && !@story.status.eql?('published')  %>
         
         <% if current_user.is_chief_editor? || (current_user.id == @writer.id) %>
 
